@@ -4,11 +4,8 @@ This is a skeleton you can use to start your projects
 
 ## Overview
 
-This project template contains starter code for your class project. The `/service` folder contains your `models.py` file for your model and a `routes.py` file for your service. The `/tests` folder has test case starter code for testing the model and the service separately. All you need to do is add your functionality. You can use the [lab-flask-rest](https://github.com/nyu-devops/lab-flask-rest) for code examples to take from.
+This project is a class project for NYU Devops class.
 
-## Automatic Setup
-
-The best way to use this repo is to start your own repo using it as a git template. To do this just press the green **Use this template** button in GitHub and this will become the source for your repository.
 
 ## Manual Setup
 
@@ -47,5 +44,9 @@ tests/              - test cases package
 
 Vagrantfile         - sample Vagrant file that installs Python 3 and PostgreSQL
 ```
+
+## How to run
+
+## How to test
 
 This repository is part of the NYU class **CSCI-GA.2810-001: DevOps and Agile Methodologies** taught by John Rofrano, Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science.
