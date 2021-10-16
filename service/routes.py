@@ -39,3 +39,16 @@ def init_db():
     """ Initialies the SQLAlchemy app """
     global app
     YourResourceModel.init_db(app)
+
+
+@app.route('/products', methods=['GET'])
+def list_products():
+    results = []
+    category = request.args.get('category')
+    if category:
+        app.logger.info('Getting Products for category: {}'.format(category))
+        results = Product.find_by_category(category)
+    else:
+        app.logger.info('Getting all Pets')
+        results = Product.all()
+    return jsonify([product.serialize() for product in results]), status.HTTP_200_OK
