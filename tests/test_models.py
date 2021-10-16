@@ -38,3 +38,19 @@ class TestYourResourceModel(unittest.TestCase):
     def test_XXXX(self):
         """ Test something """
         self.assertTrue(True)
+
+    def test_find_product(self):
+         """Find a Product by ID"""
+        products = ProductFactory.create_batch(3)
+        for product in products:
+            product.create()
+        logging.debug(product)
+        # make sure they got saved
+        self.assertEqual(len(Product.all()), 3)
+        # find the 2nd pet in the list
+        product = Product.find(products[1].id)
+        self.assertIsNot(product, None)
+        self.assertEqual(product.id, products[1].id)
+        self.assertEqual(product.name, products[1].name)
+        self.assertEqual(product.available, products[1].available)
+
