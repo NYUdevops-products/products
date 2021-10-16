@@ -45,6 +45,10 @@ Vagrantfile         - sample Vagrant file that installs Python 3 and PostgreSQL
 
 ## How to run
 
+vagrant up
+vargrant ssh
+python server.py
+
 ## How to test
 
 This repository is part of the NYU class **CSCI-GA.2810-001: DevOps and Agile Methodologies** taught by John Rofrano, Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science.
