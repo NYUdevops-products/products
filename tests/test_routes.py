@@ -45,3 +45,8 @@ class TestYourResourceServer(TestCase):
         """ Test index call """
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    def test_get_product_list(self):
+        resp = self.app.get('/products')
+        self.assertEqual( resp.status_code, status.HTTP_200_OK )
+        self.assertTrue( len(resp.data) > 0 )

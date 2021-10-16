@@ -40,7 +40,7 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertTrue(True)
 
     def test_find_product(self):
-         """Find a Product by ID"""
+        """Find a Product by ID"""
         products = ProductFactory.create_batch(3)
         for product in products:
             product.create()
@@ -58,10 +58,5 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(product.status, products[1].status)
 
         
-
-    def test_get_product_list(self):
-        resp = self.app.get('/products')
-        self.assertEqual( resp.status_code, status.HTTP_200_OK )
-        self.assertTrue( len(resp.data) > 0 )
 
     
