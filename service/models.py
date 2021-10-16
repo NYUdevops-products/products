@@ -17,20 +17,32 @@ class DataValidationError(Exception):
 
     pass
 
+class PdtStatus(Enum):
+    # Enumeration of valid product states
+    Good = 0
+    Normal = 1
+    Bad = 2
+    Unknow = 4
 
 class Product(db.Model):
     """
     Class that represents a <your resource model name>
     """
-
+    # create a product(name="iPhone", category="phone", amount=1, description="the latest iPhone 13", status="Status.Good")
     app = None
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(63))
+    name = db.Column(db.String(63), nullable = False)
+    category = db.Column(db.String(63), nullable = False)
+    amount = db.Column(db.Integer, nullable = False)
+    description = db.Column(db.String(63))
+    status = db.Column(
+        db.Enum(PdtStatus), nullable = False, server_default =(PdtStatus.Unknow.name) 
+    )
 
     def __repr__(self):
-        return "<YourResourceModel %r id=[%s]>" % (self.name, self.id)
+        return "<Product %r id=[%s]>" % (self.name, self.id)
 
     def create(self):
         """
