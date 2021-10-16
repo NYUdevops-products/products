@@ -51,4 +51,8 @@ python server.py
 
 ## How to test
 
+Run test_models.py
+
+Run test_routes.py
+
 This repository is part of the NYU class **CSCI-GA.2810-001: DevOps and Agile Methodologies** taught by John Rofrano, Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science.
