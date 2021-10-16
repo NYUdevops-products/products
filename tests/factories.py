@@ -1,6 +1,6 @@
 import factory
 from factory.fuzzy import FuzzyChoice
-from service.models import Product, Status
+from service.models import Product, PdtStatus
 
 class ProductFactory(factory.Factory):
     class Meta:
