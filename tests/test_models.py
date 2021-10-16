@@ -38,3 +38,10 @@ class TestYourResourceModel(unittest.TestCase):
     def test_XXXX(self):
         """ Test something """
         self.assertTrue(True)
+
+    def test_get_product_list(self):
+        resp = self.app.get('/products')
+        self.assertEqual( resp.status_code, status.HTTP_200_OK )
+        self.assertTrue( len(resp.data) > 0 )
+
+    
