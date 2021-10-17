@@ -32,7 +32,7 @@ class Product(db.Model):
     """
     Class that represents a <your resource model name>
     """
-    # create a product(name="iPhone", category="phone", amount=1, description="the latest iPhone 13", status="Status.Good")
+    # create a product(name="iPhone", category="phone", amount=1, description="the latest iPhone 13", status=PdtStatus.Good)
     app = None
 
     # Table Schema
