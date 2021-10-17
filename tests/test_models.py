@@ -15,21 +15,44 @@ class TestYourResourceModel(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """ This runs once before the entire test suite """
-        pass
+        """Run once before all tests"""
+        app.config["TESTING"] = True
+        app.config["DEBUG"] = False
+        # Set up the test database
+        app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
+        app.logger.setLevel(logging.CRITICAL)
+        init_db(app)
 
     @classmethod
     def tearDownClass(cls):
-        """ This runs once after the entire test suite """
-        pass
+        """Run once after all tests"""
+        db.session.close()
 
     def setUp(self):
-        """ This runs before each test """
-        pass
+        """Runs before each test"""
+        db.drop_all()  # clean up the last tests
+        db.create_all()  # create new tables
+        self.app = app.test_client()
 
     def tearDown(self):
-        """ This runs after each test """
-        pass
+        db.session.remove()
+        db.drop_all()
+
+    # def _create_pets(self, count):
+    #     """Factory method to create pets in bulk"""
+    #     pets = []
+    #     for _ in range(count):
+    #         test_pet = PetFactory()
+    #         resp = self.app.post(
+    #             BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
+    #         )
+    #         self.assertEqual(
+    #             resp.status_code, status.HTTP_201_CREATED, "Could not create test pet"
+    #         )
+    #         new_pet = resp.get_json()
+    #         test_pet.id = new_pet["id"]
+    #         pets.append(test_pet)
+    #     return pets
 
     ######################################################################
     #  T E S T   C A S E S
