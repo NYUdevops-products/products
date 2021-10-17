@@ -42,6 +42,17 @@ tests/              - test cases package
 
 Vagrantfile         - sample Vagrant file that installs Python 3 and PostgreSQL
 ```
+## Service Descriptions
+Create a new product
+
+Update a product
+
+Delete a product
+
+List products
+
+read the resource
+
 
 ## How to run
 
