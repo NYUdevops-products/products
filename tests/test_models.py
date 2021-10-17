@@ -57,6 +57,13 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(product.description, products[1].description)
         self.assertEqual(product.status, products[1].status)
 
-        
+        def test_delete_a_product(self):
+        """Delete a product"""
+        product = ProductFactory()
+        product.create()
+        self.assertEqual(len(Product.all()), 1)
+        # delete the product and make sure it isn't in the database
+        product.delete()
+        self.assertEqual(len(Product.all()), 0)
 
     
