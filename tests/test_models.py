@@ -5,7 +5,7 @@ Test cases for YourResourceModel Model
 import logging
 import unittest
 import os
-from service.models import Product, DataValidationError, db
+from service.models import PdtStatus, Product, DataValidationError, db
 from service import app
 from .factories import ProductFactory
 
@@ -52,15 +52,18 @@ class TestYourResourceModel(unittest.TestCase):
 
     def test_create_a_product(self):
         """Create a product and assert that it exists"""
-        product = Product(name="apple", category="fruit", available=True)
+        product = Product(name="apple", category="fruit", amount = 1, description="sweet and fresh", status=PdtStatus.Good)
         self.assertTrue(product != None)
         self.assertEqual(product.id, None)
         self.assertEqual(product.name, "apple")
         self.assertEqual(product.category, "fruit")
-        self.assertEqual(product.available, True)
-        product = Product(name="pineapple", category="fruit", available=False)
-        self.assertEqual(product.name, "pineapple")
-        self.assertEqual(product.available, False)
+        self.assertEqual(product.amount, 1)
+        self.assertEqual(product.description, "sweet and fresh")
+        self.assertEqual(product.status, PdtStatus.Good)
+        product = Product(name="iphone", category="phone", amount = 0, description="the latest version", status=PdtStatus.Normal)
+        self.assertEqual(product.name, "iphone")
+        self.assertEqual(product.amount, 0)
+        self.assertEqual(product.status, PdtStatus.Normal)
 
 
     def test_find_product(self):
