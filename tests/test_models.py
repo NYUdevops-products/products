@@ -5,7 +5,7 @@ Test cases for YourResourceModel Model
 import logging
 import unittest
 import os
-from service.models import YourResourceModel, DataValidationError, db
+from service.models import Product, DataValidationError, db
 
 ######################################################################
 #  <your resource name>   M O D E L   T E S T   C A S E S
@@ -80,7 +80,7 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(product.description, products[1].description)
         self.assertEqual(product.status, products[1].status)
 
-        def test_delete_a_product(self):
+    def test_delete_a_product(self):
         """Delete a product"""
         product = ProductFactory()
         product.create()
