@@ -6,14 +6,13 @@ import logging
 import unittest
 import os
 from service.models import Product, DataValidationError, db
-<<<<<<< HEAD
 from service import app
+from .factories import ProductFactory
+
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
 )
-=======
 
->>>>>>> e6be1a687846bc300da918f83bec04f1dd56746b
 ######################################################################
 #  <your resource name>   M O D E L   T E S T   C A S E S
 ######################################################################
