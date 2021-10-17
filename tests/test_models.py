@@ -5,8 +5,11 @@ Test cases for YourResourceModel Model
 import logging
 import unittest
 import os
-from service.models import YourResourceModel, DataValidationError, db
-
+from service.models import Product, DataValidationError, db
+from service import app
+DATABASE_URI = os.getenv(
+    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
+)
 ######################################################################
 #  <your resource name>   M O D E L   T E S T   C A S E S
 ######################################################################
@@ -21,7 +24,7 @@ class TestYourResourceModel(unittest.TestCase):
         # Set up the test database
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
-        init_db(app)
+        Product.init_db(app)
 
     @classmethod
     def tearDownClass(cls):
@@ -38,29 +41,24 @@ class TestYourResourceModel(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-    # def _create_pets(self, count):
-    #     """Factory method to create pets in bulk"""
-    #     pets = []
-    #     for _ in range(count):
-    #         test_pet = PetFactory()
-    #         resp = self.app.post(
-    #             BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
-    #         )
-    #         self.assertEqual(
-    #             resp.status_code, status.HTTP_201_CREATED, "Could not create test pet"
-    #         )
-    #         new_pet = resp.get_json()
-    #         test_pet.id = new_pet["id"]
-    #         pets.append(test_pet)
-    #     return pets
+  
 
     ######################################################################
     #  T E S T   C A S E S
     ######################################################################
 
-    def test_XXXX(self):
-        """ Test something """
-        self.assertTrue(True)
+    def test_create_a_product(self):
+        """Create a pet and assert that it exists"""
+        product = Product(name="apple", category="fruit", available=True)
+        self.assertTrue(product != None)
+        self.assertEqual(product.id, None)
+        self.assertEqual(product.name, "apple")
+        self.assertEqual(product.category, "fruit")
+        self.assertEqual(product.available, True)
+        product = Product(name="pineapple", category="fruit", available=False)
+        self.assertEqual(product.name, "pineapple")
+        self.assertEqual(product.available, False)
+
 
     def test_find_product(self):
         """Find a Product by ID"""
@@ -81,12 +79,13 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(product.status, products[1].status)
 
         def test_delete_a_product(self):
-        """Delete a product"""
-        product = ProductFactory()
-        product.create()
-        self.assertEqual(len(Product.all()), 1)
-        # delete the product and make sure it isn't in the database
-        product.delete()
-        self.assertEqual(len(Product.all()), 0)
+            """Delete a product"""
+            product = ProductFactory()
+            product.create()
+            self.assertEqual(len(Product.all()), 1)
+            # delete the product and make sure it isn't in the database
+            product.delete()
+            self.assertEqual(len(Product.all()), 0)
 
     
+ 
