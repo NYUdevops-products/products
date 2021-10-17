@@ -71,10 +71,32 @@ class TestProductServer(TestCase):
     def test_delete_product(self):
         """delete a product"""
         test_product = self._create_products(1)[0]
-        resp = self.app.delete( "{0}/{1}".format(BASE_URL, test_pet.id), content_type=CONTENT_TYPE_JSON)
+        resp = self.app.delete( "{0}/{1}".format(BASE_URL, test_product.id), content_type=CONTENT_TYPE_JSON)
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(resp.data), 0)
         
         # to check and make sure the product is deleted
         resp = self.app.get("{0}/{1}".format(BASE_URL, test_product.id), content_type=CONTENT_TYPE_JSON )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_product(self):
+        """Update an existing Product"""
+        # create a product to update
+        test_product = ProductFactory()
+        resp = self.app.post(
+            BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # update the product
+        new_product = resp.get_json()
+        logging.debug(new_product)
+        new_product["category"] = "hotdog"
+        resp = self.app.put(
+            "/products/{}".format(new_product["id"]),
+            json=new_product,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_product = resp.get_json()
+        self.assertEqual(updated_product["category"], "hotdog")
