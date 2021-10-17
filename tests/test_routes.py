@@ -16,7 +16,7 @@ from service.routes import app, init_db
 DATABASE_URI=os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
 )
-BASE_URI="/products"
+BASE_URL="/products"
 CONTENT_TYPE_JSON="application/json"
 
 

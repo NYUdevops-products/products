@@ -6,10 +6,14 @@ import logging
 import unittest
 import os
 from service.models import Product, DataValidationError, db
+<<<<<<< HEAD
 from service import app
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
 )
+=======
+
+>>>>>>> e6be1a687846bc300da918f83bec04f1dd56746b
 ######################################################################
 #  <your resource name>   M O D E L   T E S T   C A S E S
 ######################################################################
@@ -78,6 +82,7 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(product.description, products[1].description)
         self.assertEqual(product.status, products[1].status)
 
+<<<<<<< HEAD
         def test_delete_a_product(self):
             """Delete a product"""
             product = ProductFactory()
@@ -86,6 +91,16 @@ class TestYourResourceModel(unittest.TestCase):
             # delete the product and make sure it isn't in the database
             product.delete()
             self.assertEqual(len(Product.all()), 0)
+=======
+    def test_delete_a_product(self):
+        """Delete a product"""
+        product = ProductFactory()
+        product.create()
+        self.assertEqual(len(Product.all()), 1)
+        # delete the product and make sure it isn't in the database
+        product.delete()
+        self.assertEqual(len(Product.all()), 0)
+>>>>>>> e6be1a687846bc300da918f83bec04f1dd56746b
 
     
  
