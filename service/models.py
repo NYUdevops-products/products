@@ -22,7 +22,7 @@ class PdtStatus(Enum):
     Good = 0
     Normal = 1
     Bad = 2
-    Unknow = 4
+    Unknown = 4
 
 class Product(db.Model):
     """
@@ -66,26 +66,37 @@ class Product(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def serialize(self):
-        """ Serializes a YourResourceModel into a dictionary """
-        return {"id": self.id, "name": self.name}
+    def serialize(self) -> dict:
+        """Serializes a Pet into a dictionary"""
+        return {
+            "id": self.id,
+            "name": self.name,
+            "category": self.category,
+            "amount": self.amount,
+            "description": self.description,
+            "status": self.status.name,  # convert enum to string
+        }
 
-    def deserialize(self, data):
+    def deserialize(self, data: dict):
         """
-        Deserializes a YourResourceModel from a dictionary
-
+        Deserializes a Product from a dictionary
         Args:
-            data (dict): A dictionary containing the resource data
+            data (dict): A dictionary containing the Product data
         """
         try:
+            self.id = data["id"]
             self.name = data["name"]
+            self.category = data["category"]
+            self.amount = data["amount"]
+            self.description = data["description"]
+            self.status = getattr(PdtStatus, data["status"])  # create enum from string
+        except AttributeError as error:
+            raise DataValidationError("Invalid attribute: " + error.args[0])
         except KeyError as error:
-            raise DataValidationError(
-                "Invalid YourResourceModel: missing " + error.args[0]
-            )
+            raise DataValidationError("Invalid product: missing " + error.args[0])
         except TypeError as error:
             raise DataValidationError(
-                "Invalid YourResourceModel: body of request contained bad or no data"
+                "Invalid produc: body of request contained bad or no data"
             )
         return self
 
