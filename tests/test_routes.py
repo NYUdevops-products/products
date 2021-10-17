@@ -13,6 +13,13 @@ from service import status  # HTTP Status Codes
 from service.models import db
 from service.routes import app, init_db
 
+DATABASE_URI=os.getenv(
+    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
+)
+BASE_URI="/products"
+CONTENT_TYPE_JSON="application/json"
+
+
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
