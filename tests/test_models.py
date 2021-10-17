@@ -51,16 +51,20 @@ class TestYourResourceModel(unittest.TestCase):
     ######################################################################
 
     def test_create_a_product(self):
+<<<<<<< Updated upstream
         """Create a product and assert that it exists"""
         product = Product(name="apple", category="fruit", amount = 1, description="sweet and fresh", status=PdtStatus.Good)
+=======
+        """Create a pet and assert that it exists"""
+        product = Product(name="apple", category="fruit", amount = 1, status=PdtStatus.Good)
+>>>>>>> Stashed changes
         self.assertTrue(product != None)
         self.assertEqual(product.id, None)
         self.assertEqual(product.name, "apple")
         self.assertEqual(product.category, "fruit")
         self.assertEqual(product.amount, 1)
-        self.assertEqual(product.description, "sweet and fresh")
         self.assertEqual(product.status, PdtStatus.Good)
-        product = Product(name="iphone", category="phone", amount = 0, description="the latest version", status=PdtStatus.Normal)
+        product = Product(name="iphone", category="phone", amount = 0, status=PdtStatus.Normal)
         self.assertEqual(product.name, "iphone")
         self.assertEqual(product.amount, 0)
         self.assertEqual(product.status, PdtStatus.Normal)
@@ -81,7 +85,6 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(product.name, products[1].name)
         self.assertEqual(product.amount, products[1].amount)
         self.assertEqual(product.category, products[1].category)
-        self.assertEqual(product.description, products[1].description)
         self.assertEqual(product.status, products[1].status)
 
 
