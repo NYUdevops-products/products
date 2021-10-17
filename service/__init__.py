@@ -8,6 +8,8 @@ import os
 import sys
 import logging
 from flask import Flask
+import logging
+from logging import Formatter, FileHandler
 
 # Create Flask application
 app = Flask(__name__)
