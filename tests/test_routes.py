@@ -10,8 +10,9 @@ import logging
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from service import status  # HTTP Status Codes
-from service.models import db
-from service.routes import app, init_db
+from service.models import db, init_db
+from service.routes import app
+from .factories import ProductFactory
 
 DATABASE_URI=os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"

@@ -10,4 +10,4 @@ class ProductFactory(factory.Factory):
     name = factory.Faker("random_name")
     category = FuzzyChoice(choices = ['phone', 'table', 'computer', 'curtain'])
     amount = FuzzyChoice(choices = [1,2,3,4,5,6,7,8,9,10])
-    status = FuzzyChoice(choices = [Status.Good, Status.Normal, Status.Bad, Status.Unknow])    
+    status = FuzzyChoice(choices = [PdtStatus.Good, PdtStatus.Normal, PdtStatus.Bad, PdtStatus.Unknown])    

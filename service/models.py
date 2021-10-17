@@ -42,7 +42,7 @@ class Product(db.Model):
     amount = db.Column(db.Integer, nullable = False)
     description = db.Column(db.String(63))
     status = db.Column(
-        db.Enum(PdtStatus), nullable = False, server_default =(PdtStatus.Unknow.name) 
+        db.Enum(PdtStatus), nullable = False, server_default =(PdtStatus.Unknown.name) 
     )
 
     def __repr__(self):
