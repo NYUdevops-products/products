@@ -51,7 +51,7 @@ class TestYourResourceModel(unittest.TestCase):
     ######################################################################
 
     def test_create_a_product(self):
-        """Create a pet and assert that it exists"""
+        """Create a product and assert that it exists"""
         product = Product(name="apple", category="fruit", available=True)
         self.assertTrue(product != None)
         self.assertEqual(product.id, None)
@@ -71,7 +71,7 @@ class TestYourResourceModel(unittest.TestCase):
         logging.debug(product)
         # make sure they got saved
         self.assertEqual(len(Product.all()), 3)
-        # find the 2nd pet in the list
+        # find the 2nd product in the list
         product = Product.find(products[1].id)
         self.assertIsNot(product, None)
         self.assertEqual(product.id, products[1].id)
@@ -91,6 +91,23 @@ class TestYourResourceModel(unittest.TestCase):
         product.delete()
         self.assertEqual(len(Product.all()), 0)
 
-
-    
+    def test_update_a_product(self):
+        """Update a Product"""
+        product = ProductFactory()
+        logging.debug(product)
+        product.create()
+        logging.debug(product)
+        self.assertEqual(product.id, 1)
+        # Change it an save it
+        product.category = "hotdog"
+        original_id = product.id
+        product.update()
+        self.assertEqual(product.id, original_id)
+        self.assertEqual(product.category, "hotdog")
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        products = Product.all()
+        self.assertEqual(len(products), 1)
+        self.assertEqual(products[0].id, 1)
+        self.assertEqual(products[0].category, "hotdog")
  

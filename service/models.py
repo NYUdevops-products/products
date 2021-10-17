@@ -70,6 +70,15 @@ class Product(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def update(self):
+        """
+        Updates a Product to the database
+        """
+        logger.info("Saving %s", self.name)
+        if not self.id:
+            raise DataValidationError("Update called with empty ID field")
+        db.session.commit()
+
     def serialize(self) -> dict:
         """Serializes a Pet into a dictionary"""
         return {
