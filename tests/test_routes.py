@@ -57,3 +57,14 @@ class TestYourResourceServer(TestCase):
         resp = self.app.get('/products')
         self.assertEqual( resp.status_code, status.HTTP_200_OK )
         self.assertTrue( len(resp.data) > 0 )
+        
+     def test_delete_product(self):
+        """delete a product"""
+        test_product = self._create_products(1)[0]
+        resp = self.app.delete( "{0}/{1}".format(BASE_URL, test_pet.id), content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        
+        # to check and make sure the product is deleted
+        resp = self.app.get("{0}/{1}".format(BASE_URL, test_product.id), content_type=CONTENT_TYPE_JSON )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
