@@ -53,12 +53,13 @@ class TestProductServer(TestCase):
         """ This runs after each test """
         db.session.remove()
         db.drop_all()
-        
+
     def _create_products(self, count):
         """Factory method to create products in bulk"""
         products = []
         for _ in range(count):
             test_product = ProductFactory()
+            print("1111",test_product)
             resp = self.app.post(
                 BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
             )
