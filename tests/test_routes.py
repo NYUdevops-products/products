@@ -8,6 +8,7 @@ Test cases can be run with the following:
 import os
 import logging
 from unittest import TestCase
+from urllib.parse import quote_plus
 from unittest.mock import MagicMock, patch
 from service import status  # HTTP Status Codes
 from service.models import db, init_db
@@ -59,7 +60,6 @@ class TestProductServer(TestCase):
         products = []
         for _ in range(count):
             test_product = ProductFactory()
-            print("1111",test_product)
             resp = self.app.post(
                 BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
             )
@@ -83,7 +83,22 @@ class TestProductServer(TestCase):
         resp = self.app.get('/products')
         self.assertEqual( resp.status_code, status.HTTP_200_OK )
         self.assertTrue( len(resp.data) > 0 )
-        
+    
+    def test_query_product_list_by_category(self):
+        """Query Products by Category"""
+        products = self._create_products(10)
+        test_category = products[0].category
+        category_products = [product for product in products if product.category == test_category]
+        resp = self.app.get(
+            BASE_URL, query_string="category={}".format(quote_plus(test_category))
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(category_products))
+        # check the data just to be sure
+        for pet in data:
+            self.assertEqual(pet["category"], test_category)
+
     def test_delete_product(self):
         """delete a product"""
         test_product = self._create_products(1)[0]

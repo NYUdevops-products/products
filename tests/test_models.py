@@ -5,6 +5,7 @@ Test cases for YourResourceModel Model
 import logging
 import unittest
 import os
+from werkzeug.exceptions import NotFound
 from service.models import PdtStatus, Product, DataValidationError, db
 from service import app
 from .factories import ProductFactory
@@ -111,4 +112,70 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(len(products), 1)
         self.assertEqual(products[0].id, 1)
         self.assertEqual(products[0].category, "hotdog")
+
+    def test_serialize_a_product(self):
+        """Test serialization of a Product"""
+        product = ProductFactory()
+        data = product.serialize()
+        self.assertNotEqual(data, None)
+        self.assertIn("id", data)
+        self.assertEqual(data["id"], product.id)
+        self.assertIn("name", data)
+        self.assertEqual(data["name"], product.name)
+        self.assertIn("category", data)
+        self.assertEqual(data["category"], product.category)
+        self.assertIn("amount", data)
+        self.assertEqual(data["amount"], product.amount)
+        self.assertIn("status", data)
+        self.assertEqual(data["status"], product.status.name)
+
+    def test_deserialize_a_product(self):
+        """Test deserialization of a Product"""
+        data = {
+            "id": 1,
+            "name": "iphone",
+            "category": "phone",
+            "amount": 0,
+            "status": 1,
+        }
+        product = Product()
+        product.deserialize(data)
+        self.assertNotEqual(product, None)
+        self.assertEqual(product.id, None)
+        self.assertEqual(product.name, "iphone")
+        self.assertEqual(product.category, "phone")
+        self.assertEqual(product.available, True)
+        self.assertEqual(product.status, PdtStatus.Normal)
+
+
+    def test_deserialize_missing_data(self):
+        """Test deserialization of a Product with missing data"""
+        data = {"id": 1, "name": "iphone", "category": "phone"}
+        product = Product()
+        self.assertRaises(DataValidationError, product.deserialize, data)
+
+    def test_find_or_404_found(self):
+        """Find or return 404 found"""
+        products = ProductFactory.create_batch(3)
+        for product in products:
+            product.create()
+
+        product = Product.find_or_404(products[1].id)
+        self.assertIsNot(product, None)
+        self.assertEqual(product.id, products[1].id)
+        self.assertEqual(product.name, products[1].name)
+        self.assertEqual(product.amount, products[1].amount)
+
+    def test_find_or_404_not_found(self):
+        """Find or return 404 NOT found"""
+        self.assertRaises(NotFound, Product.find_or_404, 0)
+
+    def test_find_by_name(self):
+        """Find a Product by Name"""
+        Product(name="iphone", category="phone", amount=1).create()
+        Product(name="iphone13", category="phone", amount=2).create()
+        products = Product.find_by_name("iphone")
+        self.assertEqual(products[0].category, "phone")
+        self.assertEqual(products[0].name, "iphone")
+        self.assertEqual(products[0].amount, 1)
  
