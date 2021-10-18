@@ -9,6 +9,7 @@ import sys
 import logging
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from . import status  # HTTP Status Codes
+from werkzeug.exceptions import NotFound
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
@@ -53,6 +54,25 @@ def list_products():
         results = Product.all()
     return jsonify([product.serialize() for product in results]), status.HTTP_200_OK
 
+
+######################################################################
+# RETRIEVE A PET
+######################################################################
+@app.route("/products/<int:product_id>", methods=["GET"])
+def get_products(product_id):
+    """
+    Retrieve a single Product
+    This endpoint will return a Product based on it's id
+    """
+    app.logger.info("Request for pet with id: %s", product_id)
+    product = Product.find(product_id)
+    if not product:
+        raise NotFound("Product with id '{}' was not found.".format(product_id))
+
+    app.logger.info("Returning product: %s", product.name)
+    return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
+
+
 ######################################################################
 # ADD A NEW product
 ######################################################################
@@ -74,6 +94,44 @@ def create_products():
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
+
+######################################################################
+# UPDATE AN EXISTING PET
+######################################################################
+@app.route("/products/<int:product_id>", methods=["PUT"])
+def update_products(product_id):
+    """
+    Update a Product
+    This endpoint will update a Product based the body that is posted
+    """
+    app.logger.info("Request to update pet with id: %s", product_id)
+    check_content_type("application/json")
+    product = Product.find(product_id)
+    if not product:
+        raise NotFound("Product with id '{}' was not found.".format(product_id))
+    product.deserialize(request.get_json())
+    product.id = product_id
+    product.update()
+
+    app.logger.info("Product with ID [%s] updated.", product.id)
+    return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# DELETE A PET
+######################################################################
+@app.route("/products/<int:product_id>", methods=["DELETE"])
+def delete_products(product_id):
+    """
+    Delete a Product
+    This endpoint will delete a Product based the id specified in the path
+    """
+    app.logger.info("Request to delete pet with id: %s", product_id)
+    product = Product.find(product_id)
+    if product:
+        product.delete()
+
+    app.logger.info("Product with ID [%s] delete complete.", product_id)
+    return make_response("", status.HTTP_204_NO_CONTENT)
 
 
 
