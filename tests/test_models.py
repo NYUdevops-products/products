@@ -51,13 +51,8 @@ class TestYourResourceModel(unittest.TestCase):
     ######################################################################
 
     def test_create_a_product(self):
-<<<<<<< Updated upstream
         """Create a product and assert that it exists"""
-        product = Product(name="apple", category="fruit", amount = 1, description="sweet and fresh", status=PdtStatus.Good)
-=======
-        """Create a pet and assert that it exists"""
         product = Product(name="apple", category="fruit", amount = 1, status=PdtStatus.Good)
->>>>>>> Stashed changes
         self.assertTrue(product != None)
         self.assertEqual(product.id, None)
         self.assertEqual(product.name, "apple")
