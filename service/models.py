@@ -40,7 +40,6 @@ class Product(db.Model):
     name = db.Column(db.String(63), nullable = False)
     category = db.Column(db.String(63), nullable = False)
     amount = db.Column(db.Integer, nullable = False)
-    description = db.Column(db.String(63))
     status = db.Column(
         db.Enum(PdtStatus), nullable = False, server_default =(PdtStatus.Unknown.name) 
     )
@@ -86,7 +85,6 @@ class Product(db.Model):
             "name": self.name,
             "category": self.category,
             "amount": self.amount,
-            "description": self.description,
             "status": self.status.name,  # convert enum to string
         }
 
@@ -101,7 +99,6 @@ class Product(db.Model):
             self.name = data["name"]
             self.category = data["category"]
             self.amount = data["amount"]
-            self.description = data["description"]
             self.status = getattr(PdtStatus, data["status"])  # create enum from string
         except AttributeError as error:
             raise DataValidationError("Invalid attribute: " + error.args[0])

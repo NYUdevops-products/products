@@ -53,7 +53,22 @@ class TestProductServer(TestCase):
         """ This runs after each test """
         db.session.remove()
         db.drop_all()
-
+        
+    def _create_products(self, count):
+        """Factory method to create products in bulk"""
+        products = []
+        for _ in range(count):
+            test_product = ProductFactory()
+            resp = self.app.post(
+                BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
+            )
+            self.assertEqual(
+                resp.status_code, status.HTTP_201_CREATED, "Could not create test product"
+            )
+            new_product = resp.get_json()
+            test_product.id = new_product["id"]
+            products.append(test_product)
+        return products
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################

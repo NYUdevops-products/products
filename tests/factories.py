@@ -7,7 +7,7 @@ class ProductFactory(factory.Factory):
         model = Product
 
     id = factory.Sequence(lambda n:n)
-    name = factory.Faker("random_name")
+    name = factory.Faker("first_name")
     category = FuzzyChoice(choices = ['phone', 'table', 'computer', 'curtain'])
     # description = FuzzyChoice(choices = ['phone', 'table', 'computer', 'curtain'])
     amount = FuzzyChoice(choices = [1,2,3,4,5,6,7,8,9,10])
