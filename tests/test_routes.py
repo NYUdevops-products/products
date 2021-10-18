@@ -131,3 +131,19 @@ class TestProductServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_product = resp.get_json()
         self.assertEqual(updated_product["category"], "hotdog")
+    
+    def test_method_not_supported(self):
+        """method not supported"""
+        resp = self.app.put('/products')
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+    def test_create_product_no_data(self):
+        """Create a Product with missing data"""
+        resp = self.app.post(BASE_URL, json={}, content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    
+    def test_create_product_no_content_type(self):
+        """Create a Product with no content type"""
+        resp = self.app.post(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)

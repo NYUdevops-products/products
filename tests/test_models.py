@@ -129,28 +129,16 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertIn("status", data)
         self.assertEqual(data["status"], product.status.name)
 
-    def test_deserialize_a_product(self):
-        """Test deserialization of a Product"""
-        data = {
-            "id": 1,
-            "name": "iphone",
-            "category": "phone",
-            "amount": 0,
-            "status": 1,
-        }
-        product = Product()
-        product.deserialize(data)
-        self.assertNotEqual(product, None)
-        self.assertEqual(product.id, None)
-        self.assertEqual(product.name, "iphone")
-        self.assertEqual(product.category, "phone")
-        self.assertEqual(product.available, True)
-        self.assertEqual(product.status, PdtStatus.Normal)
-
-
     def test_deserialize_missing_data(self):
         """Test deserialization of a Product with missing data"""
         data = {"id": 1, "name": "iphone", "category": "phone"}
+        product = Product()
+        self.assertRaises(DataValidationError, product.deserialize, data)
+
+
+    def test_deserialize_bad_data(self):
+        """Test deserialization of bad data"""
+        data = "this is not a dictionary"
         product = Product()
         self.assertRaises(DataValidationError, product.deserialize, data)
 
