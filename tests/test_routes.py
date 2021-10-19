@@ -179,3 +179,43 @@ class TestProductServer(TestCase):
         resp = self.app.post(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
+
+    def test_create_product(self):
+        """Create a new Product"""
+        test_product = ProductFactory()
+        logging.debug(test_product)
+        resp = self.app.post(
+            BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+        # Check the data is correct
+        new_product = resp.get_json()
+        self.assertEqual(new_product["name"], test_product.name, "Names do not match")
+        self.assertEqual(
+            new_product["category"], test_product.category, "Categories do not match"
+        )
+        self.assertEqual(
+            new_product["amount"], test_product.amount, "Amount does not match"
+        )
+        self.assertEqual(
+            new_product["status"], test_product.status, "Status does not match"
+        )
+        
+
+        # Check that the location header was correct
+        resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        new_product = resp.get_json()
+        self.assertEqual(product["name"], test_product.name, "Names do not match")
+        self.assertEqual(
+            new_product["category"], test_product.category, "Categories do not match"
+        )
+        self.assertEqual(
+            new_product["amount"], test_product.amount, "Amount does not match"
+        )
+        self.assertEqual(
+            new_product["status"], test_product.status, "Status does not match"
+        )
