@@ -10,6 +10,8 @@ import logging
 from unittest import TestCase
 from urllib.parse import quote_plus
 from unittest.mock import MagicMock, patch
+
+from werkzeug.exceptions import NotFound
 from service import status  # HTTP Status Codes
 from service.models import db, init_db, DataValidationError
 from service.routes import app
@@ -143,25 +145,30 @@ class TestProductServer(TestCase):
         updated_product = resp.get_json()
         self.assertEqual(updated_product["category"], "hotdog")
 
-    def test_update_with_wrong_id(self):
-        """Update an existing Product"""
-        # create a product to update
-        test_product = ProductFactory()
-        resp = self.app.post(
-            BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)    
+    # def test_update_with_wrong_id(self):
+    #     """Update an existing Product"""
+    #     # create a product to update
+    #     test_product = ProductFactory()
+    #     resp = self.app.post(
+    #         BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)    
 
-        # update the product with wrong id
-        new_product = resp.get_json()
-        logging.debug(new_product)
-        new_product["category"] = "hotdog"
-        new_product["id"] = 0
-        resp = self.app.put(
-            "/products/{}".format(new_product["id"]),
-            json=new_product,
-            content_type=CONTENT_TYPE_JSON,
-        )        
+    #     # update the product with wrong id
+    #     new_product = resp.get_json()
+    #     logging.debug(new_product)
+    #     new_product["category"] = "hotdog"
+    #     new_product["id"] = 0
+    #     resp = self.app.put(
+    #         "/products/{}".format(new_product["id"]),
+    #         json=new_product,
+    #         content_type=CONTENT_TYPE_JSON,
+    #     )    
+
+    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+    #     updated_product = resp.get_json()
+    #     self.assertEqual(updated_product["category"], "hotdog")    
+        
     
     def test_method_not_supported(self):
         """method not supported"""
