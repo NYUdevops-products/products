@@ -207,22 +207,15 @@ class TestProductServer(TestCase):
         self.assertEqual(
             new_product["amount"], test_product.amount, "Amount does not match"
         )
-        self.assertEqual(
-            new_product["status"], test_product.status, "Status does not match"
-        )
-        
 
         # Check that the location header was correct
         resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         new_product = resp.get_json()
-        self.assertEqual(product["name"], test_product.name, "Names do not match")
+        self.assertEqual(new_product["name"], test_product.name, "Names do not match")
         self.assertEqual(
             new_product["category"], test_product.category, "Categories do not match"
         )
         self.assertEqual(
             new_product["amount"], test_product.amount, "Amount does not match"
-        )
-        self.assertEqual(
-            new_product["status"], test_product.status, "Status does not match"
         )
