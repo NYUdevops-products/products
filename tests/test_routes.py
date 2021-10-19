@@ -11,7 +11,7 @@ from unittest import TestCase
 from urllib.parse import quote_plus
 from unittest.mock import MagicMock, patch
 from service import status  # HTTP Status Codes
-from service.models import db, init_db
+from service.models import db, init_db, DataValidationError
 from service.routes import app
 from .factories import ProductFactory
 
@@ -83,6 +83,17 @@ class TestProductServer(TestCase):
         resp = self.app.get('/products')
         self.assertEqual( resp.status_code, status.HTTP_200_OK )
         self.assertTrue( len(resp.data) > 0 )
+
+    def test_get_product(self):
+        """Get a single Product"""
+        # get the id of a product
+        test_product = self._create_products(1)[0]
+        resp = self.app.get(
+            "/products/{}".format(test_product.id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], test_product.name)
     
     def test_query_product_list_by_category(self):
         """Query Products by Category"""
@@ -96,8 +107,8 @@ class TestProductServer(TestCase):
         data = resp.get_json()
         self.assertEqual(len(data), len(category_products))
         # check the data just to be sure
-        for pet in data:
-            self.assertEqual(pet["category"], test_category)
+        for product in data:
+            self.assertEqual(product["category"], test_category)
 
     def test_delete_product(self):
         """delete a product"""
@@ -131,6 +142,26 @@ class TestProductServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_product = resp.get_json()
         self.assertEqual(updated_product["category"], "hotdog")
+
+    def test_update_with_wrong_id(self):
+        """Update an existing Product"""
+        # create a product to update
+        test_product = ProductFactory()
+        resp = self.app.post(
+            BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)    
+
+        # update the product with wrong id
+        new_product = resp.get_json()
+        logging.debug(new_product)
+        new_product["category"] = "hotdog"
+        new_product["id"] = 0
+        resp = self.app.put(
+            "/products/{}".format(new_product["id"]),
+            json=new_product,
+            content_type=CONTENT_TYPE_JSON,
+        )        
     
     def test_method_not_supported(self):
         """method not supported"""
@@ -147,3 +178,4 @@ class TestProductServer(TestCase):
         """Create a Product with no content type"""
         resp = self.app.post(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
