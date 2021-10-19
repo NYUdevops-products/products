@@ -113,6 +113,20 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(products[0].id, 1)
         self.assertEqual(products[0].category, "hotdog")
 
+    def test_update_with_empty_id(self):
+        """Update a Product"""
+        product = ProductFactory()
+        logging.debug(product)
+        product.create()
+        logging.debug(product)
+        self.assertEqual(product.id, 1)    
+        product.category = "hotdog"
+        # Change id an save it
+        product.id = None
+        # product.update()
+        self.assertRaises(DataValidationError, product.update())        
+
+
     def test_serialize_a_product(self):
         """Test serialization of a Product"""
         product = ProductFactory()
@@ -139,6 +153,14 @@ class TestYourResourceModel(unittest.TestCase):
     def test_deserialize_bad_data(self):
         """Test deserialization of bad data"""
         data = "this is not a dictionary"
+        product = Product()
+        self.assertRaises(DataValidationError, product.deserialize, data)
+
+    def test_deserialize_bad_status(self):
+        """ Test deserialization of bad status attribute """
+        test_product = ProductFactory()
+        data = test_product.serialize()
+        data["status"] = "good" # wrong case
         product = Product()
         self.assertRaises(DataValidationError, product.deserialize, data)
 
