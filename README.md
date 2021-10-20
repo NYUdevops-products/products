@@ -56,7 +56,7 @@ read the resource
 
 ## How to run
 
-Varant init ->
+Vagrant init ->
 vagrant up ->
 vargrant ssh ->
 cd vagrant/ ->
@@ -64,7 +64,7 @@ python server.py
 
 ## How to test
 
-Varant init ->
+Vagrant init ->
 vagrant up ->
 vargrant ssh ->
 cd vagrant/ ->
