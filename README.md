@@ -37,6 +37,7 @@ service/                - service python package
 
 tests/              - test cases package
 ├── __init__.py     - package initializer
+├── factories.py    - factory for product
 ├── test_models.py  - test suite for busines models
 └── test_routes.py  - test suite for service routes
 
