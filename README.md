@@ -61,7 +61,7 @@ Vagrant init ->
 vagrant up ->
 vargrant ssh ->
 cd vagrant/ ->
-python server.py
+FLASK_APP=service:app flask run -h 0.0.0.0
 
 ## How to test
 
