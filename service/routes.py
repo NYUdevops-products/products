@@ -24,11 +24,22 @@ from . import app
 ######################################################################
 @app.route("/")
 def index():
-    """ Root URL response """
+    """Root URL response"""
+    app.logger.info("Request for Root URL")
     return (
-        "Reminder: return some useful information in json format about the service here",
+        jsonify(
+            name="Product Demo REST API Service",
+            version="1.0",
+            paths=url_for("list_products", _external=True),
+        ),
         status.HTTP_200_OK,
     )
+
+    # """ Root URL response """
+    # return (
+    #     "Reminder: return some useful information in json format about the service here",
+    #     status.HTTP_200_OK,
+    # )
 
 
 ######################################################################
