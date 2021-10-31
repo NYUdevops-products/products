@@ -1,3 +1,5 @@
+[![Build Status](https://app.travis-ci.com/NYUdevops-products/products.svg?branch=main)](https://app.travis-ci.com/NYUdevops-products/products)
+
 # project-products
 
 ## Overview
