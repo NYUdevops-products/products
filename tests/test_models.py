@@ -124,7 +124,7 @@ class TestYourResourceModel(unittest.TestCase):
         # Change id an save it
         product.id = None
         # product.update()
-        self.assertRaises(DataValidationError, product.update())        
+        self.assertRaises(DataValidationError, product.update)        
 
 
     def test_serialize_a_product(self):
