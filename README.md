@@ -47,16 +47,14 @@ tests/              - test cases package
 Vagrantfile         - sample Vagrant file that installs Python 3 and PostgreSQL
 ```
 ## Service Descriptions
-Create a new product
+The following operations can be performed on the product services
 
-Update a product
-
-Delete a product
-
-List products
-
-read the resource
-
+List all products: [GET] /products
+List products by ID: [GET] /products/int:id
+Create a new product: [POST] /products
+Update a product: [PUT] /products/int:id
+Delete a product: [DELETE] /products/int:id
+Update status of product:
 
 ## How to run
 
