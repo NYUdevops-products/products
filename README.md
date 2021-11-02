@@ -46,30 +46,35 @@ tests/              - test cases package
 
 Vagrantfile         - sample Vagrant file that installs Python 3 and PostgreSQL
 ```
+
 ## Service Descriptions
 The following operations can be performed on the product services
 
+```text
 List all products: [GET] /products
 List products by ID: [GET] /products/int:id
 Create a new product: [POST] /products
 Update a product: [PUT] /products/int:id
 Delete a product: [DELETE] /products/int:id
 Update status of product:
+```
 
 ## How to run
 
+```bash
 Vagrant init ->
 vagrant up ->
 vargrant ssh ->
 cd vagrant/ ->
 FLASK_APP=service:app flask run -h 0.0.0.0
-
+```
 ## How to test
 
+```bash
 Vagrant init ->
 vagrant up ->
 vargrant ssh ->
 cd vagrant/ ->
 Nosetests
-
+```
 This repository is part of the NYU class **CSCI-GA.2810-001: DevOps and Agile Methodologies** taught by John Rofrano, Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science.
