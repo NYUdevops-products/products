@@ -192,15 +192,15 @@ class Product(db.Model):
         vcap_services = {}
         # Try and get VCAP from the environment or a file if developing
         if 'VCAP_SERVICES' in os.environ:
-            Pet.logger.info('Running in Bluemix mode.')
+            Product.logger.info('Running in Bluemix mode.')
             vcap_services = json.loads(os.environ['VCAP_SERVICES'])
         # if VCAP_SERVICES isn't found, maybe we are running on Kubernetes?
         elif 'BINDING_CLOUDANT' in os.environ:
-            Pet.logger.info('Found Kubernetes Bindings')
+            Product.logger.info('Found Kubernetes Bindings')
             creds = json.loads(os.environ['BINDING_CLOUDANT'])
             vcap_services = {"cloudantNoSQLDB": [{"credentials": creds}]}
         else:
-            Pet.logger.info('VCAP_SERVICES and BINDING_CLOUDANT undefined.')
+            Product.logger.info('VCAP_SERVICES and BINDING_CLOUDANT undefined.')
             creds = {
                 "username": COUCHDB_USERNAME,
                 "password": COUCHDB_PASSWORD,
@@ -221,15 +221,15 @@ class Product(db.Model):
                 opts['url'] = cloudant_service['credentials']['url']
 
         if any(k not in opts for k in ('host', 'username', 'password', 'port', 'url')):
-            Pet.logger.info('Error - Failed to retrieve options. ' \
+            Product.logger.info('Error - Failed to retrieve options. ' \
                              'Check that app is bound to a Cloudant service.')
             exit(-1)
 
-        Pet.logger.info('Cloudant Endpoint: %s', opts['url'])
+        Product.logger.info('Cloudant Endpoint: %s', opts['url'])
         try:
             if ADMIN_PARTY:
-                Pet.logger.info('Running in Admin Party Mode...')
-            Pet.client = Cloudant(opts['username'],
+                Product.logger.info('Running in Admin Party Mode...')
+            Productet.client = Cloudant(opts['username'],
                                   opts['password'],
                                   url=opts['url'],
                                   connect=True,
@@ -242,10 +242,10 @@ class Product(db.Model):
 
         # Create database if it doesn't exist
         try:
-            Pet.database = Pet.client[dbname]
+            Product.database = Product.client[dbname]
         except KeyError:
             # Create a database using an initialized client
-            Pet.database = Pet.client.create_database(dbname)
+            Product.database = Product.client.create_database(dbname)
         # check for success
-        if not Pet.database.exists():
+        if not Product.database.exists():
             raise AssertionError('Database [{}] could not be obtained'.format(dbname))
