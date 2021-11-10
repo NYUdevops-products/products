@@ -6,15 +6,34 @@ All of the models are stored in this module
 import logging
 from flask_sqlalchemy import SQLAlchemy
 from enum import Enum
+from retry import retry
+from cloudant.client import Cloudant
+from cloudant.query import Query
+from cloudant.adapters import Replay429Adapter
+from requests import HTTPError, ConnectionError
+
 
 logger = logging.getLogger("flask.app")
 
 # Create the SQLAlchemy object to be initialized later in init_db()
-db = SQLAlchemy()
+# db = SQLAlchemy()
 
-def init_db(app):
-    """Initialies the SQLAlchemy app"""
-    Product.init_db(app)
+# def init_db(app):
+#     """Initialies the SQLAlchemy app"""
+#     Product.init_db(app)
+
+
+# get configuration from environment (12-factor)
+ADMIN_PARTY = os.environ.get('ADMIN_PARTY', 'False').lower() == 'true'
+COUCHDB_HOST = os.environ.get('COUCHDB_HOST', 'localhost')
+COUCHDB_USERNAME = os.environ.get('COUCHDB_USERNAME', 'admin')
+COUCHDB_PASSWORD = os.environ.get('COUCHDB_PASSWORD', 'pass')
+
+# global variables for retry (must be int)
+RETRY_COUNT = int(os.environ.get('RETRY_COUNT', 10))
+RETRY_DELAY = int(os.environ.get('RETRY_DELAY', 1))
+RETRY_BACKOFF = int(os.environ.get('RETRY_BACKOFF', 2))
+
 
 class DataValidationError(Exception):
     """ Used for an data validation errors when deserializing """
@@ -158,3 +177,75 @@ class Product(db.Model):
         """
         logger.info("Processing category query for %s ...", category)
         return cls.query.filter(cls.category == category)
+
+
+############################################################
+#  C L O U D A N T   D A T A B A S E   C O N N E C T I O N
+############################################################
+
+    @staticmethod
+    def init_db(dbname='pets'):
+        """
+        Initialized Coundant database connection
+        """
+        opts = {}
+        vcap_services = {}
+        # Try and get VCAP from the environment or a file if developing
+        if 'VCAP_SERVICES' in os.environ:
+            Pet.logger.info('Running in Bluemix mode.')
+            vcap_services = json.loads(os.environ['VCAP_SERVICES'])
+        # if VCAP_SERVICES isn't found, maybe we are running on Kubernetes?
+        elif 'BINDING_CLOUDANT' in os.environ:
+            Pet.logger.info('Found Kubernetes Bindings')
+            creds = json.loads(os.environ['BINDING_CLOUDANT'])
+            vcap_services = {"cloudantNoSQLDB": [{"credentials": creds}]}
+        else:
+            Pet.logger.info('VCAP_SERVICES and BINDING_CLOUDANT undefined.')
+            creds = {
+                "username": COUCHDB_USERNAME,
+                "password": COUCHDB_PASSWORD,
+                "host": COUCHDB_HOST,
+                "port": 5984,
+                "url": "http://"+COUCHDB_HOST+":5984/"
+            }
+            vcap_services = {"cloudantNoSQLDB": [{"credentials": creds}]}
+
+        # Look for Cloudant in VCAP_SERVICES
+        for service in vcap_services:
+            if service.startswith('cloudantNoSQLDB'):
+                cloudant_service = vcap_services[service][0]
+                opts['username'] = cloudant_service['credentials']['username']
+                opts['password'] = cloudant_service['credentials']['password']
+                opts['host'] = cloudant_service['credentials']['host']
+                opts['port'] = cloudant_service['credentials']['port']
+                opts['url'] = cloudant_service['credentials']['url']
+
+        if any(k not in opts for k in ('host', 'username', 'password', 'port', 'url')):
+            Pet.logger.info('Error - Failed to retrieve options. ' \
+                             'Check that app is bound to a Cloudant service.')
+            exit(-1)
+
+        Pet.logger.info('Cloudant Endpoint: %s', opts['url'])
+        try:
+            if ADMIN_PARTY:
+                Pet.logger.info('Running in Admin Party Mode...')
+            Pet.client = Cloudant(opts['username'],
+                                  opts['password'],
+                                  url=opts['url'],
+                                  connect=True,
+                                  auto_renew=True,
+                                  admin_party=ADMIN_PARTY,
+                                  adapter=Replay429Adapter(retries=10, initialBackoff=0.01)
+                                 )
+        except ConnectionError:
+            raise AssertionError('Cloudant service could not be reached')
+
+        # Create database if it doesn't exist
+        try:
+            Pet.database = Pet.client[dbname]
+        except KeyError:
+            # Create a database using an initialized client
+            Pet.database = Pet.client.create_database(dbname)
+        # check for success
+        if not Pet.database.exists():
+            raise AssertionError('Database [{}] could not be obtained'.format(dbname))
