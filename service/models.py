@@ -40,10 +40,10 @@ class Product(db.Model):
     name = db.Column(db.String(63), nullable = False)
     category = db.Column(db.String(63), nullable = False)
     amount = db.Column(db.Integer, nullable = False)
-    status = db.Column(
-        db.Enum(PdtStatus), nullable = False, server_default =(PdtStatus.Unknown.name) 
-    )
-
+    status = db.Column(db.Enum(PdtStatus), nullable = False, server_default =(PdtStatus.Unknown.name))
+    likecount = db.Column(db.Integer, nullable = False, default = 0)
+    
+    
     def __repr__(self):
         return "<Product %r id=[%s]>" % (self.name, self.id)
 
@@ -86,6 +86,7 @@ class Product(db.Model):
             "category": self.category,
             "amount": self.amount,
             "status": self.status.name,  # convert enum to string
+            "likecount": self.likecount,
         }
 
     def deserialize(self, data: dict):
@@ -100,6 +101,7 @@ class Product(db.Model):
             self.category = data["category"]
             self.amount = data["amount"]
             self.status = getattr(PdtStatus, data["status"])  # create enum from string
+            self.likecount = data["likecount"]
         except AttributeError as error:
             raise DataValidationError("Invalid attribute: " + error.args[0])
         except KeyError as error:
@@ -122,8 +124,8 @@ class Product(db.Model):
 
     @classmethod
     def all(cls):
-        """ Returns all of the YourResourceModels in the database """
-        logger.info("Processing all YourResourceModels")
+        """ Returns all of the Products in the database """
+        logger.info("Processing all Products")
         return cls.query.all()
 
     @classmethod

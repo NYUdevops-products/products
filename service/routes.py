@@ -85,7 +85,7 @@ def get_products(product_id):
 
 
 ######################################################################
-# ADD A NEW product
+# ADD A NEW PRODUCT
 ######################################################################
 @app.route("/products", methods=["POST"])
 def create_products():
@@ -107,7 +107,7 @@ def create_products():
     )
 
 ######################################################################
-# UPDATE AN EXISTING PET
+# UPDATE AN EXISTING PRODUCT
 ######################################################################
 @app.route("/products/<int:product_id>", methods=["PUT"])
 def update_products(product_id):
@@ -118,6 +118,7 @@ def update_products(product_id):
     app.logger.info("Request to update pet with id: %s", product_id)
     check_content_type("application/json")
     product = Product.find(product_id)
+    print(product)
     if not product:
         raise NotFound("Product with id '{}' was not found.".format(product_id))
     product.deserialize(request.get_json())
@@ -128,7 +129,7 @@ def update_products(product_id):
     return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
 
 ######################################################################
-# DELETE A PET
+# DELETE A PRODUCT
 ######################################################################
 @app.route("/products/<int:product_id>", methods=["DELETE"])
 def delete_products(product_id):
@@ -144,7 +145,24 @@ def delete_products(product_id):
     app.logger.info("Product with ID [%s] delete complete.", product_id)
     return make_response("", status.HTTP_204_NO_CONTENT)
 
+######################################################################
+# ADD LIKE
+######################################################################
+@app.route("/products/addlike/<int:product_id>", methods=["PUT"])
+def add_likecount(product_id):
+    app.logger.info("Request to add likecount of product by 1 with id: %s", product_id)
+    check_content_type("application/json")
+    product = Product.find(product_id)
+    if not product:
+        raise NotFound("Product with id '{}' was not found.".format(product_id))
+    # print(request.get_json())
+    product.id = product_id
+    product.likecount = product.likecount + 1
+    product.update()
 
+    app.logger.info("Product with ID [%s] updated.", product.id)
+    return make_response(jsonify(product.serialize()), status.HTTP_200_OK)
+    
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
