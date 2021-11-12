@@ -5,6 +5,7 @@ Test cases can be run with the following:
   nosetests -v --with-spec --spec-color
   coverage report -m
 """
+from itertools import product
 import os
 import logging
 from unittest import TestCase
@@ -14,7 +15,7 @@ from unittest.mock import MagicMock, patch
 from werkzeug.exceptions import NotFound
 from service import status  # HTTP Status Codes
 from service.models import db, init_db, DataValidationError
-from service.routes import app
+from service.routes import add_likecount, app, update_products
 from .factories import ProductFactory
 
 DATABASE_URI=os.getenv(
@@ -219,3 +220,22 @@ class TestProductServer(TestCase):
         self.assertEqual(
             new_product["amount"], test_product.amount, "Amount does not match"
         )
+
+    def test_add_likecount(self):
+        """Increment Like Count"""
+        test_product = ProductFactory()
+        resp = self.app.post(
+            BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        new_product = resp.get_json()
+        resp = self.app.put(
+            "/products/addlike/{}".format(new_product["id"]),
+            json=new_product,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        # self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_product = add_likecount(new_product["id"])
+        self.assertEqual(updated_product["likecount"], 1)

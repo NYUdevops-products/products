@@ -82,6 +82,7 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(product.amount, products[1].amount)
         self.assertEqual(product.category, products[1].category)
         self.assertEqual(product.status, products[1].status)
+        self.assertEqual(product.likecount, products[1].likecount)
 
 
     def test_delete_a_product(self):
@@ -142,6 +143,8 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(data["amount"], product.amount)
         self.assertIn("status", data)
         self.assertEqual(data["status"], product.status.name)
+        self.assertIn("likecount", data)
+        self.assertEqual(data["likecount"], product.likecount)
 
     def test_deserialize_missing_data(self):
         """Test deserialization of a Product with missing data"""
@@ -175,6 +178,7 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(product.id, products[1].id)
         self.assertEqual(product.name, products[1].name)
         self.assertEqual(product.amount, products[1].amount)
+        self.assertEqual(product.likecount, products[1].likecount)
 
     def test_find_or_404_not_found(self):
         """Find or return 404 NOT found"""
@@ -188,4 +192,3 @@ class TestYourResourceModel(unittest.TestCase):
         self.assertEqual(products[0].category, "phone")
         self.assertEqual(products[0].name, "iphone")
         self.assertEqual(products[0].amount, 1)
- 
