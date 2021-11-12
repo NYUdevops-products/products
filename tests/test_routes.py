@@ -230,6 +230,7 @@ class TestProductServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
         new_product = resp.get_json()
+        logging.debug(new_product["id"])
         resp = self.app.put(
             "/products/addlike/{}".format(new_product["id"]),
             json=new_product,
@@ -237,5 +238,5 @@ class TestProductServer(TestCase):
         )
         # self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        updated_product = add_likecount(new_product["id"])
+        updated_product = resp.get_json()
         self.assertEqual(updated_product["likecount"], 1)
