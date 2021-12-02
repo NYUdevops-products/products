@@ -5,10 +5,10 @@ Feature: The product store service back-end
 
 Background:
     Given the following products
-        | name       | category | available |
-        | fido       | dog      | True      |
-        | kitty      | cat      | True      |
-        | leo        | lion     | False     |
+        | name       | category | status |
+        | iPhone     | phone    | Normal      |
+        | Huawei     | phone    | Good      |
+        | Nike       | shoe     | Unknown     |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -36,17 +36,15 @@ Scenario: Create a Product
 Scenario: List all products
     When I visit the "Home Page"
     And I press the "Search" button
-    Then I should see "fido" in the results
-    And I should see "kitty" in the results
-    And I should not see "leo" in the results
+    Then I should see "iPhone" in the results
+    And I should see "Huawei" in the results
 
-Scenario: Search all dogs
+Scenario: Search all phones
     When I visit the "Home Page"
-    And I set the "Category" to "dog"
+    And I set the "Category" to "phone"
     And I press the "Search" button
-    Then I should see "fido" in the results
-    And I should not see "kitty" in the results
-    And I should not see "leo" in the results
+    Then I should see "iPhone" in the results
+    And I should not see "Huawei" in the results
 
 Scenario: Update a Product
     When I visit the "Home Page"
