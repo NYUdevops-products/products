@@ -6,9 +6,9 @@ Feature: The product store service back-end
 Background:
     Given the following products
         | name       | category | available |
-        | fido       | dog      | True      |
-        | kitty      | cat      | True      |
-        | leo        | lion     | False     |
+        | iphone     | phone      | True      |
+        | mac pro    | pc       | True      |
+        | huawei     | phone     | False     |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -36,33 +36,33 @@ Scenario: Create a Product
 Scenario: List all products
     When I visit the "Home Page"
     And I press the "Search" button
-    Then I should see "fido" in the results
-    And I should see "kitty" in the results
-    And I should not see "leo" in the results
+    Then I should see "iphone" in the results
+    And I should see "mac pro" in the results
+    And I should not see "huawei" in the results
 
-Scenario: Search all dogs
+Scenario: Search all phones
     When I visit the "Home Page"
-    And I set the "Category" to "dog"
+    And I set the "Category" to "phone"
     And I press the "Search" button
-    Then I should see "fido" in the results
-    And I should not see "kitty" in the results
-    And I should not see "leo" in the results
+    Then I should see "iphone" in the results
+    And I should not see "huawei" in the results
+
 
 Scenario: Update a Product
     When I visit the "Home Page"
     And I set the "Name" to "fido"
     And I press the "Search" button
-    Then I should see "fido" in the "Name" field
-    And I should see "dog" in the "Category" field
-    When I change "Name" to "Boxer"
+    Then I should see "iphone" in the "Name" field
+    And I should see "phone" in the "Category" field
+    When I change "Name" to "iphone12"
     And I press the "Update" button
     Then I should see the message "Success"
     When I copy the "Id" field
     And I press the "Clear" button
     And I paste the "Id" field
     And I press the "Retrieve" button
-    Then I should see "Boxer" in the "Name" field
+    Then I should see "iphone12" in the "Name" field
     When I press the "Clear" button
     And I press the "Search" button
-    Then I should see "Boxer" in the results
-    Then I should not see "fido" in the results
+    Then I should see "iphone12" in the results
+    Then I should not see "iphone" in the results
