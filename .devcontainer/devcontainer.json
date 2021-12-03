@@ -18,7 +18,7 @@
 		"bbenoist.vagrant",
 		"sonarsource.sonarlint-vscode"
 	],
-	// "forwardPorts": [8080],
+	// "forwardPorts": [5000],
 	// Create .env file if it doesn't exist
 	"postAttachCommand": "if [ ! -f .env ]; then cp dot-env-example .env; fi; "
 }

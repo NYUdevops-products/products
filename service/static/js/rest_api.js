@@ -6,21 +6,21 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#pet_id").val(res._id);
-        $("#pet_name").val(res.name);
-        $("#pet_category").val(res.category);
-        if (res.available == true) {
-            $("#pet_available").val("true");
+        $("#product_id").val(res._id);
+        $("#product_name").val(res.name);
+        $("#product_category").val(res.category);
+        if (res.available == true)
+            $("#product_available").val("true");
         } else {
-            $("#pet_available").val("false");
+            $("#product_available").val("false");
         }
     }
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#pet_name").val("");
-        $("#pet_category").val("");
-        $("#pet_available").val("");
+        $("#product_name").val("");
+        $("#product_category").val("");
+        $("#product_available").val("");
     }
 
     // Updates the flash message area
@@ -30,24 +30,27 @@ $(function () {
     }
 
     // ****************************************
-    // Create a Pet
+    // Create a product
     // ****************************************
 
     $("#create-btn").click(function () {
 
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var name = $("#product_name").val();
+        var category = $("#product_category").val();
+        var amount = $("#product_amount").val();
+        var available = $("#product_available").val() == "true";
+        
 
         var data = {
             "name": name,
             "category": category,
+            "amount": amount,
             "available": available
         };
 
         var ajax = $.ajax({
             type: "POST",
-            url: "/pets",
+            url: "/products",
             contentType: "application/json",
             data: JSON.stringify(data),
         });
@@ -64,15 +67,15 @@ $(function () {
 
 
     // ****************************************
-    // Update a Pet
+    // Update a product
     // ****************************************
 
     $("#update-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var product_id = $("#product_id").val();
+        var name = $("#product_name").val();
+        var category = $("#product_category").val();
+        var available = $("#product_available").val() == "true";
 
         var data = {
             "name": name,
@@ -82,7 +85,7 @@ $(function () {
 
         var ajax = $.ajax({
                 type: "PUT",
-                url: "/pets/" + pet_id,
+                url: "/products/" + product_id,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -99,16 +102,16 @@ $(function () {
     });
 
     // ****************************************
-    // Retrieve a Pet
+    // Retrieve a product
     // ****************************************
 
     $("#retrieve-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
+        var product_id = $("#product_id").val();
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/pets/" + pet_id,
+            url: "/products/" + product_id,
             contentType: "application/json",
             data: ''
         })
@@ -127,23 +130,23 @@ $(function () {
     });
 
     // ****************************************
-    // Delete a Pet
+    // Delete a product
     // ****************************************
 
     $("#delete-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
+        var product_id = $("#product_id").val();
 
         var ajax = $.ajax({
             type: "DELETE",
-            url: "/pets/" + pet_id,
+            url: "/products/" + product_id,
             contentType: "application/json",
             data: '',
         })
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Pet has been Deleted!")
+            flash_message("product has been Deleted!")
         });
 
         ajax.fail(function(res){
@@ -156,19 +159,19 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#pet_id").val("");
+        $("#product_id").val("");
         clear_form_data()
     });
 
     // ****************************************
-    // Search for a Pet
+    // Search for a product
     // ****************************************
 
     $("#search-btn").click(function () {
 
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var name = $("#product_name").val();
+        var category = $("#product_category").val();
+        var available = $("#product_available").val() == "true";
 
         var queryString = ""
 
@@ -192,7 +195,7 @@ $(function () {
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/pets?" + queryString,
+            url: "/products?" + queryString,
             contentType: "application/json",
             data: ''
         })
@@ -207,21 +210,21 @@ $(function () {
             header += '<th style="width:40%">Category</th>'
             header += '<th style="width:10%">Available</th></tr>'
             $("#search_results").append(header);
-            var firstPet = "";
+            var firstProduct = "";
             for(var i = 0; i < res.length; i++) {
-                var pet = res[i];
-                var row = "<tr><td>"+pet._id+"</td><td>"+pet.name+"</td><td>"+pet.category+"</td><td>"+pet.available+"</td></tr>";
+                var product = res[i];
+                var row = "<tr><td>"+product._id+"</td><td>"+product.name+"</td><td>"+product.category+"</td><td>"+product.available+"</td></tr>";
                 $("#search_results").append(row);
                 if (i == 0) {
-                    firstPet = pet;
+                    firstProduct = product;
                 }
             }
 
             $("#search_results").append('</table>');
 
             // copy the first result to the form
-            if (firstPet != "") {
-                update_form_data(firstPet)
+            if (firstProduct != "") {
+                update_form_data(firstProduct)
             }
 
             flash_message("Success")

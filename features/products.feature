@@ -5,10 +5,10 @@ Feature: The product store service back-end
 
 Background:
     Given the following products
-        | name       | category | status |
-        | iPhone     | phone    | Normal      |
-        | Huawei     | phone    | Good      |
-        | Nike       | shoe     | Unknown     |
+        |id | name       | category |amount | status  |likecount|
+        | 1 | iPhone     | phone    |1      | Normal  |2        |
+        | 2 | Huawei     | phone    |2      | Good    |9        | 
+        | 3 | Nike       | shoe     |0      |Unknown  |5        | 
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -64,3 +64,16 @@ Scenario: Update a Product
     And I press the "Search" button
     Then I should see "Boxer" in the results
     Then I should not see "fido" in the results
+
+Scenario: List all products
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "iPhone" in the results
+    And I should see "Huawei" in the results
+
+
+Scenario: Query product with id 1
+    When I visit the "Home Page"
+    And I set the "id" to "1"
+    And I press the "Retrieve" button
+    Then I should see "iPhone" in the results

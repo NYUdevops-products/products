@@ -37,7 +37,7 @@ COPY requirements.txt .
 RUN pip --no-cache-dir install -U pip wheel && \
     pip --no-cache-dir install -r requirements.txt
 
-EXPOSE 8080
+EXPOSE 5000
 
 # Become a regular user
 USER $USERNAME
