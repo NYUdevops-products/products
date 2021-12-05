@@ -96,7 +96,7 @@ class Product(db.Model):
             data (dict): A dictionary containing the Product data
         """
         try:
-            self.id = data["id"]
+            # self.id = data["id"]
             self.name = data["name"]
             self.category = data["category"]
             self.amount = data["amount"]
@@ -110,6 +110,11 @@ class Product(db.Model):
             raise DataValidationError(
                 "Invalid product: body of request contained bad or no data"
             )
+
+        # if there is no id and the data has one, assign it
+        if not self.id and "_id" in data:
+            self.id = data["_id"]
+
         return self
 
     @classmethod

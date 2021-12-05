@@ -18,7 +18,7 @@ RUN pip install -r requirements.txt
 ADD . .
 
 # Expose any ports the app is expecting in the environment
-ENV PORT 8080
+ENV PORT 5000
 EXPOSE $PORT
 
 # Run the service
