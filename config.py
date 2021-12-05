@@ -5,7 +5,8 @@ import os
 
 # Get configuration from environment
 DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
+    # "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/postgres"
+    "DATABASE_URI", "postgres://nlvrebns:Ih55JKdwCGrMm7XnemH0wUXbwSyFwIr5@otto.db.elephantsql.com/nlvrebns"
 )
 
 # Configure SQLAlchemy
