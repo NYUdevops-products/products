@@ -98,6 +98,25 @@ def get_products(product_id):
 
 
 ######################################################################
+# RETRIEVE A PRODUCT BY NAME
+######################################################################
+@app.route("/products/<string:product_name>", methods=["GET"])
+def get_products_byname(product_name):
+    """
+    Retrieve a single Product
+    This endpoint will return a Product based on it's name
+    """
+    app.logger.info("Request for product with name: %s", product_name)
+    products = Product.find_by_name(product_name)
+    if not products:
+        raise NotFound("Product with name '{}' was not found.".format(product_name))
+
+    results = [product.serialize() for product in products]
+    app.logger.info("Returning %d product:", len(results))
+    return make_response(jsonify(results), status.HTTP_200_OK)
+
+
+######################################################################
 # ADD A NEW PRODUCT
 ######################################################################
 @app.route("/products", methods=["POST"])
