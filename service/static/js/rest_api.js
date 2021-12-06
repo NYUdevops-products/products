@@ -6,7 +6,7 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#product_id").val(res._id);
+        $("#product_id").val(res.id);
         $("#product_name").val(res.name);
         $("#product_category").val(res.category);
         $("#product_amount").val(res.amount);
@@ -124,10 +124,19 @@ $(function () {
     $("#retrieve-btn").click(function () {
 
         var product_id = $("#product_id").val();
+        var product_name=$("#product_name").val();
+        var queryString = ""
+        if (product_id){
+            queryString = product_id
+        }
+
+        if (product_name) {
+            queryString = product_name
+        }
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/products/" + product_id,
+            url: "/products/" + queryString,
             contentType: "application/json",
             data: ''
         })
@@ -185,6 +194,7 @@ $(function () {
 
     $("#search-btn").click(function () {
 
+        var id=$("#product_id").val();
         var name = $("#product_name").val();
         var category = $("#product_category").val();
         var amount = $("#product_amount").val();
@@ -193,9 +203,16 @@ $(function () {
         // var available = $("#product_available").val() == "true";
 
         var queryString = ""
+        if (id){
+            queryString += 'id=' + id
+        }
 
         if (name) {
-            queryString += 'name=' + name
+            if (queryString.length > 0) {
+                queryString += '&name=' + name
+            }else{
+                queryString += 'name=' + name
+            }
         }
         if (category) {
             if (queryString.length > 0) {
@@ -205,14 +222,28 @@ $(function () {
             }
         }
         if (amount) {
-            queryString += 'amount=' + name
+            if (queryString.length > 0) {
+                queryString += '&amount=' + name
+            }else{
+                queryString += 'amount=' + name
+            }
         }
         if (likecount) {
-            queryString += 'likecount=' + name
+            if (queryString.length > 0) {
+                queryString += '&likecount=' + name
+            }else{
+                queryString += 'likecount=' + name
+            }
         }
         if (status) {
+            if (queryString.length > 0) {
+                queryString += '&status=' + status
+            }else{
                 queryString += 'status=' + status
             }
+            }
+            
+        
         
         // if (available) {
         //     if (queryString.length > 0) {
@@ -222,9 +253,14 @@ $(function () {
         //     }
         // }
 
+        searchurl="/products?" + queryString
+        if (queryString==('name='+name)){
+            searchurl="/products/" + name
+        }
+
         var ajax = $.ajax({
             type: "GET",
-            url: "/products?" + queryString,
+            url: searchurl,
             contentType: "application/json",
             data: ''
         })
@@ -246,7 +282,7 @@ $(function () {
             for(var i = 0; i < res.length; i++) {
                 var product = res[i];
                 // var row = "<tr><td>"+product._id+"</td><td>"+product.name+"</td><td>"+product.category+"</td><td>"+product.available+"</td></tr>";
-                var row = "<tr><td>"+product._id+"</td><td>"+product.name+"</td><td>"+product.category+"</td><td>"+product.amount+"</td><td>"+product.likecount+"</td><td>"+product.status+"</td></tr>";
+                var row = "<tr><td>"+product.id+"</td><td>"+product.name+"</td><td>"+product.category+"</td><td>"+product.amount+"</td><td>"+product.likecount+"</td><td>"+product.status+"</td></tr>";
                 $("#search_results").append(row);
                 if (i == 0) {
                     firstProduct = product;
