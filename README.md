@@ -56,7 +56,7 @@ List products by ID: [GET] /products/int:id
 Create a new product: [POST] /products
 Update a product: [PUT] /products/int:id
 Delete a product: [DELETE] /products/int:id
-Update status of product:
+Increase like count of a product: [PUT] /products/addlike/int:id
 ```
 
 ## How to run
