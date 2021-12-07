@@ -22,13 +22,13 @@ from service.models import PdtStatus, Product, DataValidationError, DatabaseConn
 from . import app
 
 # Document the type of autorization required
-# authorizations = {
-#     'apikey': {
-#         'type': 'apiKey',
-#         'in': 'header',
-#         'name': 'X-Api-Key'
-#     }
-# }
+authorizations = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-Api-Key'
+    }
+}
 
 ######################################################################
 # GET INDEX
@@ -68,7 +68,7 @@ api = Api(app,
           default='products',
           default_label='Product shop operations',
           doc='/apidocs', # default also could use doc='/apidocs/'
-        #   authorizations=authorizations,
+          authorizations=authorizations,
           prefix='/api'
          )
 
@@ -322,23 +322,23 @@ class LikeResource(Resource):
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
-def abort(error_code: int, message: str):
-    """Logs errors before aborting"""
-    app.logger.error(message)
-    api.abort(error_code, message)
+# def abort(error_code: int, message: str):
+#     """Logs errors before aborting"""
+#     app.logger.error(message)
+#     api.abort(error_code, message)
 
-@app.before_first_request
-def init_db(dbname="products"):
-    """ Initlaize the model """
-    Product.init_db(dbname)
+# @app.before_first_request
+# def init_db(dbname="products"):
+#     """ Initlaize the model """
+#     Product.init_db(dbname)
 
-def check_content_type(media_type):
-    """Checks that the media type is correct"""
-    content_type = request.headers.get("Content-Type")
-    if content_type and content_type == media_type:
-        return
-    app.logger.error("Invalid Content-Type: %s", content_type)
-    abort(
-        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-        "Content-Type must be {}".format(media_type),
-    )
+# def check_content_type(media_type):
+#     """Checks that the media type is correct"""
+#     content_type = request.headers.get("Content-Type")
+#     if content_type and content_type == media_type:
+#         return
+#     app.logger.error("Invalid Content-Type: %s", content_type)
+#     abort(
+#         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+#         "Content-Type must be {}".format(media_type),
+#     )

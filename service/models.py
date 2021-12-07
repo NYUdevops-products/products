@@ -152,7 +152,7 @@ class Product(db.Model):
         return cls.query.get_or_404(by_id)
 
     @classmethod
-    def find_by_name(cls, name):
+    def find_by_name(cls, name:str) -> list:
         """Returns all YourResourceModels with the given name
 
         Args:

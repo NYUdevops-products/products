@@ -13,13 +13,15 @@ from logging import Formatter, FileHandler
 
 # Create Flask application
 app = Flask(__name__)
+app.url_map.strict_slashes = False
+
 app.config.from_object("config")
 
 # Import the routes After the Flask app is created
 from service import routes, models, error_handlers
 
 # Set up logging for production
-if __name__ != "__main__":
+if __name__ != '__main__':
     gunicorn_logger = logging.getLogger("gunicorn.error")
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
@@ -37,7 +39,7 @@ app.logger.info("  M Y   S E R V I C E   R U N N I N G  ".center(70, "*"))
 app.logger.info(70 * "*")
 
 try:
-    routes.init_db()  # make our sqlalchemy tables
+    models.init_db(app)  # make our sqlalchemy tables
 except Exception as error:
     app.logger.critical("%s: Cannot continue", error)
     # gunicorn requires exit code 4 to stop spawning workers when they die
