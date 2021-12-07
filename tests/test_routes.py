@@ -14,7 +14,7 @@ from unittest.mock import MagicMock, patch
 
 from werkzeug.exceptions import NotFound
 from service import status  # HTTP Status Codes
-from service.models import db, init_db, DataValidationError
+from service.models import Product, db, init_db, DataValidationError
 from service.routes import  app
 from .factories import ProductFactory
 
