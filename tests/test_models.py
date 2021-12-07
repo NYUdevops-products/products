@@ -189,7 +189,7 @@ class TestYourResourceModel(unittest.TestCase):
         products = ProductFactory.create_batch(3)
         for product in products:
             product.create()
-        logging.debug(product)
+        logging.debug("product info is: "product)
         # make sure they got saved
         self.assertEqual(len(Product.all()), 3)
         # find the 2nd product in the list
