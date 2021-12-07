@@ -91,3 +91,11 @@ Scenario: Query product with name iPhone
     Then I should see "iPhone" in the results
     And I should not see "Huawei" in the results
     And I should not see "Nike" in the results
+
+Scenario: Add Like to a Product
+    When I visit the "Home Page"
+    And I set the "name" to "iPhone"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    When I press the "Like" button
+    Then I should see "3" in the "Likecount" field
