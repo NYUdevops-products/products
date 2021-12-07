@@ -88,7 +88,7 @@ Vagrant.configure(2) do |config|
     sudo -H -u vagrant sh -c 'echo ". ~/venv/bin/activate" >> ~/.profile'
     # Install app dependencies
     sudo -H -u vagrant sh -c '. ~/venv/bin/activate && pip install -U pip && pip install wheel'
-    sudo -H -u vagrant sh -c '. ~/venv/bin/activate && cd /vagrant && pip install -qr requirements.txt'
+    sudo -H -u vagrant sh -c '. ~/venv/bin/activate && cd /vagrant && pip install -r requirements.txt'
   SHELL
 
   #   ######################################################################
