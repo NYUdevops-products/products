@@ -232,7 +232,7 @@ class TestProductServer(TestCase):
         new_product = resp.get_json()
         logging.debug(new_product["id"])
         resp = self.app.put(
-            "/products/addlike/{}".format(new_product["id"]),
+            "/products/{}/like".format(new_product["id"]),
             json=new_product,
             content_type=CONTENT_TYPE_JSON,
         )
