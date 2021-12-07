@@ -77,7 +77,7 @@ Vagrant.configure(2) do |config|
     apt-get install -y chromium-driver
 
     # Need PostgreSQL development library to compile on arm64
-    apt-get install -y libpq-dev
+    sudo apt-get install -y libpq-dev python-dev
     apt-get install -y lsof
     
     # Create a Python3 Virtual Environment and Activate it in .profile
