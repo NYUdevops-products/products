@@ -97,6 +97,18 @@ class TestProductServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(data["name"], test_product.name)
+
+    def test_get_product_byname(self):
+        """Get a single Product"""
+        # get the name of a product
+        test_product = self._create_products(1)[0]
+        resp = self.app.get(
+            "/products/{}".format(test_product.name), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], test_product.name)
+        self.assertEqual(data["category"], test_product.category)
     
     def test_query_product_list_by_category(self):
         """Query Products by Category"""

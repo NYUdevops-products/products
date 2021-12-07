@@ -186,9 +186,18 @@ class TestYourResourceModel(unittest.TestCase):
 
     def test_find_by_name(self):
         """Find a Product by Name"""
-        Product(name="iphone", category="phone", amount=1).create()
-        Product(name="iphone13", category="phone", amount=2).create()
-        products = Product.find_by_name("iphone")
-        self.assertEqual(products[0].category, "phone")
-        self.assertEqual(products[0].name, "iphone")
-        self.assertEqual(products[0].amount, 1)
+        products = ProductFactory.create_batch(3)
+        for product in products:
+            product.create()
+        logging.debug(product)
+        # make sure they got saved
+        self.assertEqual(len(Product.all()), 3)
+        # find the 2nd product in the list
+        product = Product.find_by_name(products[1].name)
+        self.assertIsNot(product, None)
+        self.assertEqual(product.id, products[1].id)
+        self.assertEqual(product.name, products[1].name)
+        self.assertEqual(product.amount, products[1].amount)
+        self.assertEqual(product.category, products[1].category)
+        self.assertEqual(product.status, products[1].status)
+        self.assertEqual(product.likecount, products[1].likecount)

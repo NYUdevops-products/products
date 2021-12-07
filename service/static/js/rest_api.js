@@ -118,6 +118,48 @@ $(function () {
     });
 
     // ****************************************
+    // add Like to a product
+    // ****************************************
+
+    $("#like-btn").click(function () {
+
+        var product_id = $("#product_id").val();
+        // var name = $("#product_name").val();
+        // var category = $("#product_category").val();
+        // var amount = $("#product_amount").val();
+        // var likecount = $("#product_likecount").val();
+        // var status = $("#product_status").val();
+        // var available = $("#product_available").val() == "true";
+
+        // var data = {
+        //     "name": name,
+        //     "category": category,
+        //     "amount": amount,
+        //     "likecount": likecount,
+        //     "status": status
+        //     // "available": available
+        // };
+
+        var ajax = $.ajax({
+                type: "PUT",
+                url: "/products/addlike/" + product_id,
+                contentType: "application/json",
+                data:''
+                // data: JSON.stringify(data)
+            })
+
+        ajax.done(function(res){
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });
+
+    // ****************************************
     // Retrieve a product
     // ****************************************
 
