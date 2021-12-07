@@ -15,7 +15,7 @@ from unittest.mock import MagicMock, patch
 from werkzeug.exceptions import NotFound
 from service import status  # HTTP Status Codes
 from service.models import db, init_db, DataValidationError
-from service.routes import  app
+from service.routes import  app, update_products
 from .factories import ProductFactory
 
 DATABASE_URI=os.getenv(
