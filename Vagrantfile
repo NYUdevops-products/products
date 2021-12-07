@@ -80,7 +80,7 @@ Vagrant.configure(2) do |config|
     # sudo apt-get install -y libpq-dev python-dev
     apt-get install -y libpq-dev
     apt-get install -y lsof
-    apk add postgresql-dev gcc ...
+
     # pip install psycopg2-binary==2.8.2
     
     # Create a Python3 Virtual Environment and Activate it in .profile
