@@ -22,13 +22,13 @@ from service.models import PdtStatus, Product, DataValidationError, DatabaseConn
 from . import app
 
 # Document the type of autorization required
-authorizations = {
-    'apikey': {
-        'type': 'apiKey',
-        'in': 'header',
-        'name': 'X-Api-Key'
-    }
-}
+# authorizations = {
+#     'apikey': {
+#         'type': 'apiKey',
+#         'in': 'header',
+#         'name': 'X-Api-Key'
+#     }
+# }
 
 ######################################################################
 # GET INDEX
@@ -68,7 +68,7 @@ api = Api(app,
           default='products',
           default_label='Product shop operations',
           doc='/apidocs', # default also could use doc='/apidocs/'
-          authorizations=authorizations,
+        #   authorizations=authorizations,
           prefix='/api'
          )
 
@@ -138,7 +138,7 @@ def database_connection_error(error):
 ######################################################################
 #  PATH: /products/{id}
 ######################################################################
-@api.route('/products/<products_id>')
+@api.route('/products/<int:products_id>')
 @api.param('products_id', 'The Product identifier')
 class ProductResource(Resource):
     """
@@ -156,16 +156,16 @@ class ProductResource(Resource):
     @api.doc('get_products')
     @api.response(404, 'Product not found')
     @api.marshal_with(product_model)
-    def get(self, product_id):
+    def get(self, products_id):
         """
         Retrieve a single product
 
         This endpoint will return a product based on it's id
         """
-        app.logger.info("Request to Retrieve a product with id [%s]", product_id)
-        product = Product.find(product_id)
+        app.logger.info("Request to Retrieve a product with id [%s]", products_id)
+        product = Product.find(products_id)
         if not product:
-            abort(status.HTTP_404_NOT_FOUND, "Product with id '{}' was not found.".format(product_id))
+            abort(status.HTTP_404_NOT_FOUND, "Product with id '{}' was not found.".format(products_id))
         return product.serialize(), status.HTTP_200_OK
 
     #------------------------------------------------------------------
@@ -177,20 +177,20 @@ class ProductResource(Resource):
     @api.expect(product_model)
     @api.marshal_with(product_model)
     # @token_required
-    def put(self, product_id):
+    def put(self, products_id):
         """
         Update a Product
 
         This endpoint will update a Product based the body that is posted
         """
-        app.logger.info('Request to Update a Product with id [%s]', product_id)
-        product = Product.find(product_id)
+        app.logger.info('Request to Update a Product with id [%s]', products_id)
+        product = Product.find(products_id)
         if not product:
-            abort(status.HTTP_404_NOT_FOUND, "Product with id '{}' was not found.".format(product_id))
+            abort(status.HTTP_404_NOT_FOUND, "Product with id '{}' was not found.".format(products_id))
         app.logger.debug('Payload = %s', api.payload)
         data = api.payload
         product.deserialize(data)
-        product.id = product_id
+        product.id = products_id
         product.update()
         return product.serialize(), status.HTTP_200_OK
 
@@ -200,17 +200,17 @@ class ProductResource(Resource):
     @api.doc('delete_products')
     @api.response(204, 'Product deleted')
     # @token_required
-    def delete(self, product_id):
+    def delete(self, products_id):
         """
         Delete a Product
 
         This endpoint will delete a Product based the id specified in the path
         """
-        app.logger.info('Request to Delete a Product with id [%s]', product_id)
-        product = Product.find(product_id)
+        app.logger.info('Request to Delete a Product with id [%s]', products_id)
+        product = Product.find(products_id)
         if product:
             product.delete()
-            app.logger.info('Product with id [%s] was deleted', product_id)
+            app.logger.info('Product with id [%s] was deleted', products_id)
 
         return '', status.HTTP_204_NO_CONTENT
 
