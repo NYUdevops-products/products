@@ -13,7 +13,7 @@ import logging
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI",
-    "postgres://postgres:postgres@localhost:5432/postgres"
+    "postgres://postgresql:postgres@localhost:5432/postgres"
 )
 
 # override if we are running in Cloud Foundry
