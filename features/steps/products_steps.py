@@ -32,7 +32,7 @@ def step_impl(context):
     """ Delete all products and load new ones """
     headers = {'Content-Type': 'application/json'}
     # list all of the products and delete them one by one
-    print(context.base_url+'/products')
+    # print(context.base_url+'/products')
     context.resp = requests.get(context.base_url + '/products', headers=headers)
     expect(context.resp.status_code).to_equal(200)
     for product in context.resp.json():
