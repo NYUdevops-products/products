@@ -38,3 +38,4 @@ def bad_request(error):
         ),
         status.HTTP_400_BAD_REQUEST,
     )
+

@@ -204,21 +204,24 @@ class ProductCollection(Resource):
     # LIST ALL products
     #------------------------------------------------------------------
     @api.doc('list_products')
-    @api.expect(product_args, validate=True)
+    # @api.expect(product_args, validate=True)
     @api.marshal_list_with(product_model)
     def get(self):
         """ Returns all of the Products """
         app.logger.info('Request to list Products...')
         products = []
-        args = product_args.parse_args()
+        # args = product_args.parse_args()
+        category = request.args.get('category')
+        name = request.args.get("name")
         
         
-        if args['category']:
-            app.logger.info('Filtering by category: %s', args['category'])
-            products = Product.find_by_category(args['category'])
-        elif args['name']:
-            app.logger.info('Filtering by name: %s', args['name'])
-            products = Product.find_by_name(args['name'])
+        
+        if category:
+            app.logger.info('Filtering by category: %s', category)
+            products = Product.find_by_category(category)
+        elif name:
+            app.logger.info('Filtering by name: %s', name)
+            products = Product.find_by_name(name)
         else:
             app.logger.info('Returning unfiltered list.')
             products = Product.all()

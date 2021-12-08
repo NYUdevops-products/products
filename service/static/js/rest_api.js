@@ -126,7 +126,7 @@ $(function () {
         var product_id = $("#product_id").val();
         var ajax = $.ajax({
                 type: "PUT",
-                url: "/products/addlike/" + product_id,
+                url: "/products/" + product_id+"/like",
                 contentType: "application/json",
                 data:''
                 // data: JSON.stringify(data)
@@ -280,9 +280,9 @@ $(function () {
         // }
 
         searchurl="/products?" + queryString
-        if (queryString==('name='+name)){
-            searchurl="/products/" + name
-        }
+        // if (queryString==('name='+name)){
+        //     searchurl="/products/" + name
+        // }
 
         var ajax = $.ajax({
             type: "GET",
