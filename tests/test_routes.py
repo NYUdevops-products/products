@@ -101,26 +101,19 @@ class TestProductServer(TestCase):
     def test_get_product_byname(self):
         """Get a single Product by name"""
         # get the name of a product
-        test_product = self._create_products(1)[0]
+        products = self._create_products(10)
+        test_products = products[0].name
+        name_products = [product for product in products if product.name == test_products]
         resp = self.app.get(
-            "/products/{}".format(test_product.name), content_type=CONTENT_TYPE_JSON
+            #"api/products/{}".format(test_product.name), content_type=CONTENT_TYPE_JSON
+             BASE_URL, query_string="name={}".format(quote_plus(test_products))
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data[0]["name"], test_product.name)
-        self.assertEqual(data[0]["category"], test_product.category)
-
-    def test_get_product_byname(self):
-        """Get a single Product by name"""
-        # get the name of a product
-        test_product = self._create_products(1)[0]
-        resp = self.app.get(
-            "api/products/{}".format(test_product.name), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(data[0]["name"], test_product.name)
-        self.assertEqual(data[0]["category"], test_product.category)
+        self.assertEqual(len(data), len(name_products))
+        # check the data just to be sure
+        for product in data:
+            self.assertEqual(product["name"], test_products)
     
     def test_query_product_list_by_category(self):
         """Query Products by Category"""
