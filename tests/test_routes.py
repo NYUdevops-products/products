@@ -21,7 +21,7 @@ from .factories import ProductFactory
 DATABASE_URI=os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
 )
-BASE_URL="/products"
+BASE_URL="/api/products"
 CONTENT_TYPE_JSON="application/json"
 
 
@@ -83,7 +83,7 @@ class TestProductServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
     def test_get_product_list(self):
-        resp = self.app.get('/products')
+        resp = self.app.get(BASE_URL)
         self.assertEqual( resp.status_code, status.HTTP_200_OK )
         self.assertTrue( len(resp.data) > 0 )
 
@@ -92,7 +92,7 @@ class TestProductServer(TestCase):
         # get the id of a product
         test_product = self._create_products(1)[0]
         resp = self.app.get(
-            "/products/{}".format(test_product.id), content_type=CONTENT_TYPE_JSON
+            "api/products/{}".format(test_product.id), content_type=CONTENT_TYPE_JSON
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -138,7 +138,7 @@ class TestProductServer(TestCase):
         logging.debug(new_product)
         new_product["category"] = "hotdog"
         resp = self.app.put(
-            "/products/{}".format(new_product["id"]),
+            "/api/products/{}".format(new_product["id"]),
             json=new_product,
             content_type=CONTENT_TYPE_JSON,
         )
@@ -173,7 +173,7 @@ class TestProductServer(TestCase):
     
     def test_method_not_supported(self):
         """method not supported"""
-        resp = self.app.put('/products')
+        resp = self.app.put(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
     
     def test_create_product_no_data(self):
@@ -192,6 +192,7 @@ class TestProductServer(TestCase):
         """Create a new Product"""
         test_product = ProductFactory()
         logging.debug(test_product)
+
         resp = self.app.post(
             BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
         )
@@ -232,7 +233,7 @@ class TestProductServer(TestCase):
         new_product = resp.get_json()
         logging.debug(new_product["id"])
         resp = self.app.put(
-            "/products/{}/like".format(new_product["id"]),
+            "api/products/{}/like".format(new_product["id"]),
             json=new_product,
             content_type=CONTENT_TYPE_JSON,
         )

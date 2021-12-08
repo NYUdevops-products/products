@@ -90,7 +90,7 @@ product_model = api.inherit(
     'ProductModel', 
     create_model,
     {
-        '_id': fields.String(readOnly=True,
+        'id': fields.Integer(readOnly=True,
                             description='The unique id assigned internally by service'),
     }
 )
@@ -107,27 +107,6 @@ product_args.add_argument('category', type=str, required=False, help='List Produ
 ######################################################################
 # Special Error Handlers
 ######################################################################
-@api.errorhandler(DataValidationError)
-def request_validation_error(error):
-    """ Handles Value Errors from bad data """
-    message = str(error)
-    app.logger.error(message)
-    return {
-        'status_code': status.HTTP_400_BAD_REQUEST,
-        'error': 'Bad Request',
-        'message': message
-    }, status.HTTP_400_BAD_REQUEST
-
-@api.errorhandler(DatabaseConnectionError)
-def database_connection_error(error):
-    """ Handles Database Errors from connection attempts """
-    message = str(error)
-    app.logger.critical(message)
-    return {
-        'status_code': status.HTTP_503_SERVICE_UNAVAILABLE,
-        'error': 'Service Unavailable',
-        'message': message
-    }, status.HTTP_503_SERVICE_UNAVAILABLE
 
     # """ Root URL response """
     # return (
@@ -232,6 +211,8 @@ class ProductCollection(Resource):
         app.logger.info('Request to list Products...')
         products = []
         args = product_args.parse_args()
+        
+        
         if args['category']:
             app.logger.info('Filtering by category: %s', args['category'])
             products = Product.find_by_category(args['category'])
@@ -242,8 +223,8 @@ class ProductCollection(Resource):
             app.logger.info('Returning unfiltered list.')
             products = Product.all()
 
-        app.logger.info('[%s] Products returned', len(products))
         results = [product.serialize() for product in products]
+        app.logger.info('[%s] Products returned', len(results))
         return results, status.HTTP_200_OK
 
 
@@ -261,34 +242,35 @@ class ProductCollection(Resource):
         This endpoint will create a Product based the data in the body that is posted
         """
         app.logger.info('Request to Create a Product')
+        check_content_type("application/json")
         product = Product()
         app.logger.debug('Payload = %s', api.payload)
         product.deserialize(api.payload)
         product.create()
         app.logger.info('Product with new id [%s] created!', product.id)
-        location_url = api.url_for(ProductResource, product_id=product.id, _external=True)
+        location_url = api.url_for(ProductResource, products_id=product.id, _external=True)
         return product.serialize(), status.HTTP_201_CREATED, {'Location': location_url}
 
     # ------------------------------------------------------------------
     # DELETE ALL PRODUCTS (for testing only)
     # ------------------------------------------------------------------
-    @api.doc('delete_all_products')
-    @api.response(204, 'All Products deleted')
-    # @token_required
-    def delete(self):
-        """
-        Delete all Product
+    # @api.doc('delete_all_products')
+    # @api.response(204, 'All Products deleted')
+    # # @token_required
+    # def delete(self):
+    #     """
+    #     Delete all Product
 
-        This endpoint will delete all Product only if the system is under test
-        """
-        app.logger.info('Request to Delete all products...')
-        if "TESTING" in app.config and app.config["TESTING"]:
-            Product.remove_all()
-            app.logger.info("Removed all Products from the database")
-        else:
-            app.logger.warning("Request to clear database while system not under test")
+    #     This endpoint will delete all Product only if the system is under test
+    #     """
+    #     app.logger.info('Request to Delete all products...')
+    #     if "TESTING" in app.config and app.config["TESTING"]:
+    #         Product.remove_all()
+    #         app.logger.info("Removed all Products from the database")
+    #     else:
+    #         app.logger.warning("Request to clear database while system not under test")
 
-        return '', status.HTTP_204_NO_CONTENT
+    #     return '', status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
@@ -332,13 +314,13 @@ class LikeResource(Resource):
 #     """ Initlaize the model """
 #     Product.init_db(dbname)
 
-# def check_content_type(media_type):
-#     """Checks that the media type is correct"""
-#     content_type = request.headers.get("Content-Type")
-#     if content_type and content_type == media_type:
-#         return
-#     app.logger.error("Invalid Content-Type: %s", content_type)
-#     abort(
-#         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-#         "Content-Type must be {}".format(media_type),
-#     )
+def check_content_type(media_type):
+    """Checks that the media type is correct"""
+    content_type = request.headers.get("Content-Type")
+    if content_type and content_type == media_type:
+        return
+    app.logger.error("Invalid Content-Type: %s", content_type)
+    abort(
+        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+        "Content-Type must be {}".format(media_type),
+    )
