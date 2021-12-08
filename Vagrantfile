@@ -77,7 +77,11 @@ Vagrant.configure(2) do |config|
     apt-get install -y chromium-driver
 
     # Need PostgreSQL development library to compile on arm64
+    # sudo apt-get install -y libpq-dev python-dev
     apt-get install -y libpq-dev
+    apt-get install -y lsof
+
+    # pip install psycopg2-binary==2.8.2
     
     # Create a Python3 Virtual Environment and Activate it in .profile
     sudo -H -u vagrant sh -c 'python3 -m venv ~/venv'

@@ -118,6 +118,32 @@ $(function () {
     });
 
     // ****************************************
+    // add Like to a product
+    // ****************************************
+
+    $("#like-btn").click(function () {
+
+        var product_id = $("#product_id").val();
+        var ajax = $.ajax({
+                type: "PUT",
+                url: "/products/addlike/" + product_id,
+                contentType: "application/json",
+                data:''
+                // data: JSON.stringify(data)
+            })
+
+        ajax.done(function(res){
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });
+
+    // ****************************************
     // Retrieve a product
     // ****************************************
 
