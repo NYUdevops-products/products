@@ -7,8 +7,8 @@ applications:
   memory: 128M
   # routes:
   # - route: nyu-product-service-fall2021.us-south.cf.appdomain.cloud
-  hostname: nyu-product-service-fall2021
-  domain: us-south.cf.appdomain.cloud
+  # hostname: nyu-product-service-fall2021
+  # domain: us-south.cf.appdomain.cloud
   
   disk_quota: 1024M
   buildpacks: 
