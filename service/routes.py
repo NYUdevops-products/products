@@ -69,7 +69,7 @@ api = Api(app,
           default_label='Product shop operations',
           doc='/apidocs', # default also could use doc='/apidocs/'
         #   authorizations=authorizations,
-          prefix='/api'
+        #   prefix='/api'
          )
 
 # Define the model so that the docs reflect what can be sent

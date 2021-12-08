@@ -21,7 +21,7 @@ from .factories import ProductFactory
 DATABASE_URI=os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
 )
-BASE_URL="/api/products"
+BASE_URL="/products"
 CONTENT_TYPE_JSON="application/json"
 
 
@@ -92,7 +92,7 @@ class TestProductServer(TestCase):
         # get the id of a product
         test_product = self._create_products(1)[0]
         resp = self.app.get(
-            "api/products/{}".format(test_product.id), content_type=CONTENT_TYPE_JSON
+            "/products/{}".format(test_product.id), content_type=CONTENT_TYPE_JSON
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -155,7 +155,7 @@ class TestProductServer(TestCase):
         logging.debug(new_product)
         new_product["category"] = "hotdog"
         resp = self.app.put(
-            "/api/products/{}".format(new_product["id"]),
+            "/products/{}".format(new_product["id"]),
             json=new_product,
             content_type=CONTENT_TYPE_JSON,
         )
@@ -250,7 +250,7 @@ class TestProductServer(TestCase):
         new_product = resp.get_json()
         logging.debug(new_product["id"])
         resp = self.app.put(
-            "api/products/{}/like".format(new_product["id"]),
+            "products/{}/like".format(new_product["id"]),
             json=new_product,
             content_type=CONTENT_TYPE_JSON,
         )
