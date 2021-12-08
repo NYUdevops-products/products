@@ -81,7 +81,7 @@ create_model = api.model('Product', {
     'amount': fields.Integer(required=True,
                                 description='The amount of the Products in stock'),
     'status': fields.String(enum=PdtStatus._member_names_, description='The status of the Product'),
-    'likecount': fields.Integer(require=True,
+    'likecount': fields.Integer(required=True,
                                 description = 'The number of like count of the Product')
 })
 
@@ -174,7 +174,7 @@ class ProductResource(Resource):
     @api.doc('update_products')
     @api.response(404, 'Product not found')
     @api.response(400, 'The posted Product data was not valid')
-    @api.expect(product_model)
+    @api.expect(create_model)
     @api.marshal_with(product_model)
     # @token_required
     def put(self, products_id):
