@@ -21,6 +21,12 @@ class DataValidationError(Exception):
 
     pass
 
+class DatabaseConnectionError(Exception):
+    """Custom Exception when database connection fails"""
+
+    pass
+
+
 class PdtStatus(Enum):
     # Enumeration of valid product states
     Good = 0
@@ -43,7 +49,7 @@ class Product(db.Model):
     status = db.Column(db.Enum(PdtStatus), nullable = False, server_default =(PdtStatus.Unknown.name))
     likecount = db.Column(db.Integer, nullable = False, default = 0)
     
-
+    
     def __repr__(self):
         return "<Product %r id=[%s]>" % (self.name, self.id)
 

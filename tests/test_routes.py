@@ -14,14 +14,14 @@ from unittest.mock import MagicMock, patch
 
 from werkzeug.exceptions import NotFound
 from service import status  # HTTP Status Codes
-from service.models import db, init_db, DataValidationError
-from service.routes import add_likecount, app, update_products
+from service.models import Product, db, init_db, DataValidationError
+from service.routes import  app
 from .factories import ProductFactory
 
 DATABASE_URI=os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
 )
-BASE_URL="/products"
+BASE_URL="/api/products"
 CONTENT_TYPE_JSON="application/json"
 
 
@@ -83,7 +83,7 @@ class TestProductServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
     def test_get_product_list(self):
-        resp = self.app.get('/products')
+        resp = self.app.get(BASE_URL)
         self.assertEqual( resp.status_code, status.HTTP_200_OK )
         self.assertTrue( len(resp.data) > 0 )
 
@@ -92,7 +92,7 @@ class TestProductServer(TestCase):
         # get the id of a product
         test_product = self._create_products(1)[0]
         resp = self.app.get(
-            "/products/{}".format(test_product.id), content_type=CONTENT_TYPE_JSON
+            "api/products/{}".format(test_product.id), content_type=CONTENT_TYPE_JSON
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -101,16 +101,19 @@ class TestProductServer(TestCase):
     def test_get_product_byname(self):
         """Get a single Product by name"""
         # get the name of a product
-        test_product = self._create_products(1)[0]
+        products = self._create_products(10)
+        test_products = products[0].name
+        name_products = [product for product in products if product.name == test_products]
         resp = self.app.get(
-            "/products/{}".format(test_product.name), content_type=CONTENT_TYPE_JSON
+            #"api/products/{}".format(test_product.name), content_type=CONTENT_TYPE_JSON
+             BASE_URL, query_string="name={}".format(quote_plus(test_products))
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data[0]["name"], test_product.name)
-        self.assertEqual(data[0]["category"], test_product.category)
-
-
+        self.assertEqual(len(data), len(name_products))
+        # check the data just to be sure
+        for product in data:
+            self.assertEqual(product["name"], test_products)
     
     def test_query_product_list_by_category(self):
         """Query Products by Category"""
@@ -152,7 +155,7 @@ class TestProductServer(TestCase):
         logging.debug(new_product)
         new_product["category"] = "hotdog"
         resp = self.app.put(
-            "/products/{}".format(new_product["id"]),
+            "/api/products/{}".format(new_product["id"]),
             json=new_product,
             content_type=CONTENT_TYPE_JSON,
         )
@@ -187,7 +190,7 @@ class TestProductServer(TestCase):
     
     def test_method_not_supported(self):
         """method not supported"""
-        resp = self.app.put('/products')
+        resp = self.app.put(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
     
     def test_create_product_no_data(self):
@@ -206,6 +209,7 @@ class TestProductServer(TestCase):
         """Create a new Product"""
         test_product = ProductFactory()
         logging.debug(test_product)
+
         resp = self.app.post(
             BASE_URL, json=test_product.serialize(), content_type=CONTENT_TYPE_JSON
         )
@@ -246,7 +250,7 @@ class TestProductServer(TestCase):
         new_product = resp.get_json()
         logging.debug(new_product["id"])
         resp = self.app.put(
-            "/products/addlike/{}".format(new_product["id"]),
+            "api/products/{}/like".format(new_product["id"]),
             json=new_product,
             content_type=CONTENT_TYPE_JSON,
         )
