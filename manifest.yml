@@ -4,7 +4,7 @@ applications:
 - name: nyu-product-service-fall2021
   path: .
   instances: 1
-  memory: 128M
+  memory: 256M
   # routes:
   # - route: nyu-product-service-fall2021.us-south.cf.appdomain.cloud
 
